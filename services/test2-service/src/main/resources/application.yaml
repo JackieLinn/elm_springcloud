@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: test2-service
+
+server:
+  port: 1001
