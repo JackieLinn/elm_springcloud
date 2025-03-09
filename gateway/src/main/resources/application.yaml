@@ -1,0 +1,8 @@
+spring:
+  profiles:
+    include: route
+  application:
+    name: gateway
+
+server:
+  port: 80

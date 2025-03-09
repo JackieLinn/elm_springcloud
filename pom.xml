@@ -12,6 +12,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>services</module>
+        <module>gateway</module>
     </modules>
     <groupId>ynu.jackielinn</groupId>
     <artifactId>elm</artifactId>
