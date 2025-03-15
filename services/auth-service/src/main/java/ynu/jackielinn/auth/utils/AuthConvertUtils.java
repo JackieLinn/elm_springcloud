@@ -4,7 +4,7 @@ import ynu.jackielinn.auth.dto.response.AccountVO;
 import ynu.jackielinn.auth.entity.Account;
 
 /**
- * VO对象转换工具
+ * VO 对象转换器
  */
 public class AuthConvertUtils {
 
@@ -17,12 +17,12 @@ public class AuthConvertUtils {
         if (account == null) {
             return null;
         }
-        AccountVO vo = new AccountVO();
-        vo.setUserId(account.getUserId());
-        vo.setUserName(account.getUserName());
-        vo.setUserSex(account.getUserSex());
-        vo.setEmail(account.getEmail());
-        vo.setUserImg(account.getUserImg());
-        return vo;
+        return account.asViewObject(AccountVO.class, vo -> {
+            vo.setUserId(account.getUserId());
+            vo.setUserName(account.getUserName());
+            vo.setUserSex(account.getUserSex());
+            vo.setEmail(account.getEmail());
+            vo.setUserImg(account.getUserImg());
+        });
     }
 }
