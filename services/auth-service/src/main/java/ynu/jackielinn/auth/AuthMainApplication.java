@@ -1,15 +1,15 @@
-package ynu.jackielinn.gateway;
+package ynu.jackielinn.auth;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.ComponentScan;
 
-@EnableDiscoveryClient
 @SpringBootApplication
-@ComponentScan(basePackages = {"ynu.jackielinn.gateway", "ynu.jackielinn.common.utils"})  // 添加 JwtUtils 的路径
-public class GatewayMainApplication {
+@EnableDiscoveryClient
+@ComponentScan(basePackages = {"ynu.jackielinn.auth", "ynu.jackielinn.common.utils","ynu.jackielinn.common.filter"})
+public class AuthMainApplication {
     public static void main(String[] args) {
-        SpringApplication.run(GatewayMainApplication.class, args);
+        SpringApplication.run(AuthMainApplication.class, args);
     }
 }

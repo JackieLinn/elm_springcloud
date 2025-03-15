@@ -13,6 +13,7 @@
     <modules>
         <module>services</module>
         <module>gateway</module>
+        <module>common</module>
     </modules>
     <groupId>ynu.jackielinn</groupId>
     <artifactId>elm</artifactId>
