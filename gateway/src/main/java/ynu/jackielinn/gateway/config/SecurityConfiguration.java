@@ -7,7 +7,7 @@ import org.springframework.security.config.annotation.web.reactive.EnableWebFlux
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
-import ynu.jackielinn.gateway.filter.JwtFilter;
+import ynu.jackielinn.security.filter.JwtFilter;
 
 @Configuration
 @EnableWebFluxSecurity
@@ -21,7 +21,7 @@ public class SecurityConfiguration {
         return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchanges -> exchanges
-                        .pathMatchers("/auth/**", "/test/**").permitAll()
+                        .pathMatchers("/doc/**", "/auth/**", "/error").permitAll()
                         .anyExchange().authenticated()
                 )
                 .addFilterBefore(jwtFilter, SecurityWebFiltersOrder.AUTHENTICATION)

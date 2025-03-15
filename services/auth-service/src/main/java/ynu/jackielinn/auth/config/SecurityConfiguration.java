@@ -23,8 +23,8 @@ import ynu.jackielinn.auth.service.AccountRoleService;
 import ynu.jackielinn.auth.service.AccountService;
 import ynu.jackielinn.auth.service.RoleService;
 import ynu.jackielinn.common.entity.RestBean;
-import ynu.jackielinn.common.filter.JwtAuthorizeFilter;
-import ynu.jackielinn.common.utils.JwtUtils;
+import ynu.jackielinn.security.utils.JwtUtils;
+import ynu.jackielinn.security.filter.JwtAuthorizeFilter;
 
 import java.io.IOException;
 import java.io.PrintWriter;

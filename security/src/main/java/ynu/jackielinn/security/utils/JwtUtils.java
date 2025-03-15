@@ -1,4 +1,4 @@
-package ynu.jackielinn.common.utils;
+package ynu.jackielinn.security.utils;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -13,6 +13,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import ynu.jackielinn.common.utils.Const;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

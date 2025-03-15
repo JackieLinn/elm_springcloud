@@ -1,4 +1,4 @@
-package ynu.jackielinn.common.filter;
+package ynu.jackielinn.security.filter;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.annotation.Resource;
@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import ynu.jackielinn.common.utils.JwtUtils;
+import ynu.jackielinn.security.utils.JwtUtils;
 
 import java.io.IOException;
 

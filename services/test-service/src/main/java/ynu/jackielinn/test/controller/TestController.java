@@ -3,6 +3,7 @@ package ynu.jackielinn.test.controller;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ynu.jackielinn.common.entity.RestBean;
 import ynu.jackielinn.test.service.TestService;
 
 @RestController
@@ -13,7 +14,7 @@ public class TestController {
     private TestService testService;
 
     @RequestMapping("/test")
-    public String test() {
-        return testService.test();
+    public RestBean<String> test() {
+        return RestBean.success(testService.test());
     }
 }

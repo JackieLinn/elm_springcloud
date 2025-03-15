@@ -1,4 +1,4 @@
-package ynu.jackielinn.gateway.filter;
+package ynu.jackielinn.security.filter;
 
 import com.alibaba.fastjson2.JSON;
 import com.auth0.jwt.interfaces.DecodedJWT;
@@ -15,14 +15,15 @@ import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
-import ynu.jackielinn.common.utils.JwtUtils;
+import ynu.jackielinn.security.utils.JwtUtils;
 
 import java.util.Arrays;
 
 @Component
 @Slf4j
 public class JwtFilter implements WebFilter {
-    private static final String[] WHITELISTED_PATHS = {"/auth", "/test"};
+
+    private static final String[] WHITELISTED_PATHS = {"/doc", "/auth", "/error"};
 
     @Resource
     private JwtUtils jwtUtils;

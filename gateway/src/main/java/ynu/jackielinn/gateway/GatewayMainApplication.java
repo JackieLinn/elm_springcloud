@@ -7,7 +7,10 @@ import org.springframework.context.annotation.ComponentScan;
 
 @EnableDiscoveryClient
 @SpringBootApplication
-@ComponentScan(basePackages = {"ynu.jackielinn.gateway", "ynu.jackielinn.common.utils"})  // 添加 JwtUtils 的路径
+@ComponentScan({
+        "ynu.jackielinn.gateway",
+        "ynu.jackielinn.security"
+})
 public class GatewayMainApplication {
     public static void main(String[] args) {
         SpringApplication.run(GatewayMainApplication.class, args);
