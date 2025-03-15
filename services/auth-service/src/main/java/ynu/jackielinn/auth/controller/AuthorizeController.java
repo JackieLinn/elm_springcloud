@@ -103,7 +103,7 @@ public class AuthorizeController {
     }
 
     @GetMapping("/test")
-    public String test(){
-        return "auth-test";
+    public RestBean<String> test(){
+        return RestBean.success("auth-test");
     }
 }
