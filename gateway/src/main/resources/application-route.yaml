@@ -1,11 +1,29 @@
 spring:
   cloud:
     gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOriginPatterns:
+              - "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders:
+              - Authorization
+              - Content-Type
       routes:
         - id: auth-route
           uri: lb://auth-service
           predicates:
-            - Path=/auth/**, /api/account/**
+            - Path=/auth/**,/api/account/**
+        - id: business-route
+          uri: lb://business-service
+          predicates:
+            - Path=/api/business/**
         - id: test-route
           uri: lb://test-service
           predicates:

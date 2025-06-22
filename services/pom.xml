@@ -14,6 +14,7 @@
         <module>test-service</module>
         <module>test2-service</module>
         <module>auth-service</module>
+        <module>business-service</module>
     </modules>
 
     <artifactId>services</artifactId>
