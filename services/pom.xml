@@ -17,6 +17,7 @@
         <module>business-service</module>
         <module>food-service</module>
         <module>address-service</module>
+        <module>cart-service</module>
     </modules>
 
     <artifactId>services</artifactId>

@@ -32,6 +32,10 @@ spring:
           uri: lb://address-service
           predicates:
               - Path=/api/deliveryAddress/**
+        - id: cart-route
+          uri: lb://cart-service
+          predicates:
+            - Path=/api/cart/**
         - id: test-route
           uri: lb://test-service
           predicates:
