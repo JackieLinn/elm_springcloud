@@ -24,6 +24,10 @@ spring:
           uri: lb://business-service
           predicates:
             - Path=/api/business/**
+        - id: food-route
+          uri: lb://food-service
+          predicates:
+            - Path=/api/food/**
         - id: test-route
           uri: lb://test-service
           predicates:

@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: food-service
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848
+  datasource:
+    url: jdbc:mysql://localhost:3306/elm_springcloud
+    username: root
+    password: 12345678
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+server:
+  port: 13000
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: false
