@@ -18,7 +18,7 @@ public class AccountRoleServiceImpl extends ServiceImpl<AccountRoleMapper, Accou
 
     @Override
     public boolean registerAccountRole(long uid) {
-        AccountRole accountRole = new AccountRole(null, uid, 2L);
+        AccountRole accountRole = new AccountRole(null, uid, 3L);
         return this.save(accountRole);
     }
 }

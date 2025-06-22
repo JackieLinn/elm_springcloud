@@ -5,7 +5,7 @@ spring:
         - id: auth-route
           uri: lb://auth-service
           predicates:
-            - Path=/auth/**
+            - Path=/auth/**, /api/account/**
         - id: test-route
           uri: lb://test-service
           predicates:
