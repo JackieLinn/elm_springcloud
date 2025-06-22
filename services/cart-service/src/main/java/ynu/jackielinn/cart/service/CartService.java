@@ -7,7 +7,7 @@ import ynu.jackielinn.cart.dto.request.CartUpdateRO;
 import ynu.jackielinn.cart.dto.response.CartQuantityVO;
 import ynu.jackielinn.cart.dto.response.CartVO;
 import ynu.jackielinn.cart.entity.Cart;
-import ynu.jackielinn.cart.utils.Pair;
+import ynu.jackielinn.common.utils.Pair;
 
 import java.util.List;
 import java.util.Map;

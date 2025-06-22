@@ -14,7 +14,7 @@ import ynu.jackielinn.cart.dto.response.CartVO;
 import ynu.jackielinn.cart.entity.Cart;
 import ynu.jackielinn.cart.mapper.CartMapper;
 import ynu.jackielinn.cart.service.CartService;
-import ynu.jackielinn.cart.utils.Pair;
+import ynu.jackielinn.common.utils.Pair;
 
 import java.util.HashMap;
 import java.util.List;

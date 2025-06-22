@@ -1,4 +1,4 @@
-package ynu.jackielinn.cart.utils;
+package ynu.jackielinn.common.utils;
 
 import lombok.ToString;
 
