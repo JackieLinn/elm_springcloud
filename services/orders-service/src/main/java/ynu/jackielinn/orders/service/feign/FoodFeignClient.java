@@ -12,7 +12,7 @@ import java.util.Set;
 @FeignClient(value = "food-service", path = "/api/food", fallback = FoodFeignClientFallback.class)
 public interface FoodFeignClient {
 
-    @GetMapping("/list-food-by-BusinessId")
+    @GetMapping("/list-food-by-FoodId")
     FoodVO getFoodByFoodId(@RequestParam Long foodId);
 
     @GetMapping("/get-food-info")

@@ -31,7 +31,7 @@ public class FoodController {
     }
 
     @Operation(summary = "远程调用：根据食物ID获取食物", description = "远程调用：根据食物ID获取食物")
-    @GetMapping("/list-food-by-BusinessId")
+    @GetMapping("/list-food-by-FoodId")
     public FoodVO getFoodByFoodId(@RequestParam Long foodId) {
         return foodService.getFoodByFoodId(foodId);
     }
