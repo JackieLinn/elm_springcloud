@@ -5,6 +5,8 @@ import ynu.jackielinn.business.dto.response.BusinessVO;
 import ynu.jackielinn.business.entity.Business;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public interface BusinessService extends IService<Business> {
 
@@ -17,4 +19,6 @@ public interface BusinessService extends IService<Business> {
     BusinessVO listBusinessByBusinessId(Long businessId);
 
     Double getDeliveryPriceByBusinessId(Long businessId);
+
+    Map<Long, Business> getBusinessInfo(Set<Long> businessIds);
 }

@@ -9,6 +9,8 @@ import ynu.jackielinn.business.mapper.BusinessMapper;
 import ynu.jackielinn.business.service.BusinessService;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -98,5 +100,22 @@ public class BusinessServiceImpl extends ServiceImpl<BusinessMapper, Business> i
         } else {
             return 0.0;
         }
+    }
+
+    /**
+     * 根据业务ID列表获取业务信息映射
+     * 该方法使用MyBatis-Plus的QueryWrapper来构造查询条件，通过businessIds参数进行查询，
+     * 并将查询结果转换为一个映射，其中键为业务ID，值为业务对象
+     *
+     * @param businessIds 业务ID列表，用于查询数据库中的业务信息
+     * @return 返回一个映射，键为业务ID，值为对应的业务对象 如果查询不到任何记录，则返回空映射
+     */
+    @Override
+    public Map<Long, Business> getBusinessInfo(Set<Long> businessIds) {
+        QueryWrapper<Business> businessWrapper = new QueryWrapper<>();
+        businessWrapper.in("businessId", businessIds);
+        List<Business> businesses = baseMapper.selectList(businessWrapper);
+        return businesses.stream()
+                .collect(Collectors.toMap(Business::getBusinessId, b -> b));
     }
 }

@@ -156,11 +156,7 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders>
                 .collect(Collectors.toSet());
 
         // 3. 批量查询商家信息
-        QueryWrapper<Business> businessWrapper = new QueryWrapper<>();
-        businessWrapper.in("businessId", businessIds);
-        List<Business> businesses = businessMapper.selectList(businessWrapper);
-        Map<Long, Business> businessMap = businesses.stream()
-                .collect(Collectors.toMap(Business::getBusinessId, b -> b));
+        Map<Long, Business> businessMap = businessFeignClient.getBusinessInfo(businessIds);
 
         // 4. 获取所有订单的 orderId
         Set<Long> orderIds = orders.stream()
@@ -181,11 +177,7 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders>
                 .collect(Collectors.toSet());
 
         // 7. 批量查询食品信息
-        QueryWrapper<Food> foodWrapper = new QueryWrapper<>();
-        foodWrapper.in("foodId", foodIds);
-        List<Food> foods = foodMapper.selectList(foodWrapper);
-        Map<Long, Food> foodMap = foods.stream()
-                .collect(Collectors.toMap(Food::getFoodId, f -> f));
+        Map<Long, Food> foodMap = foodFeignClient.getFoodInfo(foodIds);
 
         // 8. 按 orderId 分组订单详细信息
         Map<Long, List<OrderDetailed>> orderDetailedMap = orderDetailedList.stream()

@@ -9,9 +9,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ynu.jackielinn.common.entity.RestBean;
 import ynu.jackielinn.food.dto.response.FoodVO;
+import ynu.jackielinn.food.entity.Food;
 import ynu.jackielinn.food.service.FoodService;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/food")
@@ -31,5 +34,11 @@ public class FoodController {
     @GetMapping("/list-food-by-BusinessId")
     public FoodVO getFoodByFoodId(@RequestParam Long foodId) {
         return foodService.getFoodByFoodId(foodId);
+    }
+
+    @Operation(summary = "远程调用：根据食物ID列表获取食物", description = "远程调用：根据食物ID列表获取食物")
+    @GetMapping("/get-food-info")
+    public Map<Long, Food> getFoodInfo(@RequestParam Set<Long> foodIds) {
+        return foodService.getFoodInfo(foodIds);
     }
 }

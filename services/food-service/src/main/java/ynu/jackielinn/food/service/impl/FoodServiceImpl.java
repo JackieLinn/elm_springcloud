@@ -9,6 +9,8 @@ import ynu.jackielinn.food.mapper.FoodMapper;
 import ynu.jackielinn.food.service.FoodService;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,5 +50,22 @@ public class FoodServiceImpl extends ServiceImpl<FoodMapper, Food> implements Fo
         Food food = baseMapper.selectById(foodId);
         if (food == null) return null;
         else return food.asViewObject(FoodVO.class);
+    }
+
+    /**
+     * 根据食品ID集合获取食品信息
+     * 此方法使用MyBatis-Plus的QueryWrapper来构建查询条件，使用foodIds参数进行in查询，
+     * 然后将查询结果转换为Map，便于后续操作
+     *
+     * @param foodIds 食品ID集合，用于查询食品信息
+     * @return 返回一个Map，键为食品ID，值为Food对象
+     */
+    @Override
+    public Map<Long, Food> getFoodInfo(Set<Long> foodIds) {
+        QueryWrapper<Food> foodWrapper = new QueryWrapper<>();
+        foodWrapper.in("foodId", foodIds);
+        List<Food> foods = baseMapper.selectList(foodWrapper);
+        return foods.stream()
+                .collect(Collectors.toMap(Food::getFoodId, f -> f));
     }
 }

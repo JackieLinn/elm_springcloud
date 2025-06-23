@@ -8,12 +8,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ynu.jackielinn.business.dto.response.BusinessVO;
+import ynu.jackielinn.business.entity.Business;
 import ynu.jackielinn.business.service.BusinessService;
 import ynu.jackielinn.common.entity.RestBean;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/business")
@@ -85,5 +87,11 @@ public class BusinessController {
     @GetMapping("/get-business-by-businessId-remote")
     public BusinessVO listBusinessByBusinessIdRemote(@RequestParam Long businessId) {
         return businessService.listBusinessByBusinessId(businessId);
+    }
+
+    @Operation(summary = "远程调用：通过商家编号列表获取商家信息", description = "远程调用：通过商家编号列表获取商家信息")
+    @GetMapping("/get-business-info")
+    public Map<Long, Business> getBusinessInfo(@RequestParam Set<Long> businessIds) {
+        return businessService.getBusinessInfo(businessIds);
     }
 }
