@@ -80,4 +80,10 @@ public class BusinessController {
         categoryMap.put(10, "炸鸡炸串");
         return categoryMap;
     }
+
+    @Operation(summary = "远程调用：通过商家编号获取商家信息", description = "远程调用：通过商家编号获取商家信息")
+    @GetMapping("/get-business-by-businessId-remote")
+    public BusinessVO listBusinessByBusinessIdRemote(@RequestParam Long businessId) {
+        return businessService.listBusinessByBusinessId(businessId);
+    }
 }

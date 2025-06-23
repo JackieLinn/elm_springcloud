@@ -11,8 +11,10 @@ import ynu.jackielinn.cart.dto.response.CartQuantityVO;
 import ynu.jackielinn.cart.dto.response.CartVO;
 import ynu.jackielinn.cart.service.CartService;
 import ynu.jackielinn.common.entity.RestBean;
+import ynu.jackielinn.common.utils.Pair;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/cart")
@@ -50,5 +52,17 @@ public class CartController {
     @GetMapping("/get-cart-quantity")
     public RestBean<List<CartQuantityVO>> getCartQuantity(Long userId) {
         return RestBean.success(cartService.getCartQuantity(userId));
+    }
+
+    @Operation(summary = "远程调用：获取购物车映射", description = "远程调用：获取购物车映射")
+    @GetMapping("/get-cart-map")
+    public Map<Long, Pair<Long, Integer>> getCartMap(@RequestParam Long userId, @RequestParam Long businessId) {
+        return cartService.getCartMap(userId, businessId);
+    }
+
+    @Operation(summary = "远程调用：删除购物车记录", description = "远程调用：删除购物车记录")
+    @PostMapping("/delete-by-cid")
+    public Integer deleteByCartId(Long cartId) {
+        return cartService.deleteByCartId(cartId);
     }
 }
