@@ -25,3 +25,11 @@ services:
     ports:
       - '5672:5672'
       - '15672:15672'
+  nacos:
+    image: 'nacos/nacos-server:v2.4.3'
+    container_name: 'elm-springcloud-nacos'
+    environment:
+      - 'MODE=standalone'
+    ports:
+      - '8848:8848'
+      - '9848:9848'
