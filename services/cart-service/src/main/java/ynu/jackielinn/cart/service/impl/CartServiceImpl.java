@@ -151,6 +151,7 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements Ca
      */
     @Override
     public Integer deleteByCartId(Long cartId) {
+        System.out.println("删除购物车记录：" + cartId);
         LambdaQueryWrapper<Cart> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Cart::getCartId, cartId);
         return baseMapper.delete(queryWrapper);

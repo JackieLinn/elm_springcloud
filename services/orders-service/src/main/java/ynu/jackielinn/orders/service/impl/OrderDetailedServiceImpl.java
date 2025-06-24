@@ -50,7 +50,7 @@ public class OrderDetailedServiceImpl extends ServiceImpl<OrderDetailedMapper, O
      * @return 如果所有商品都成功添加到订单详情中，并且购物车中的商品都成功删除，则返回true；否则返回false
      */
     @Override
-    public boolean addInOrderDetailed(Long userId, Long businessId, Long orderId) {
+    public Boolean addInOrderDetailed(Long userId, Long businessId, Long orderId) {
         Map<Long, Pair<Long, Integer>> cartMap = cartFeignClient.getCartMap(userId, businessId);
         for (Map.Entry<Long, Pair<Long, Integer>> entry : cartMap.entrySet()) {
             Pair<Long, Integer> pair = entry.getValue();

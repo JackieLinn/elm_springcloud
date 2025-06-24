@@ -62,7 +62,7 @@ public class CartController {
 
     @Operation(summary = "远程调用：删除购物车记录", description = "远程调用：删除购物车记录")
     @PostMapping("/delete-by-cid")
-    public Integer deleteByCartId(Long cartId) {
+    public Integer deleteByCartId(@RequestParam Long cartId) {
         return cartService.deleteByCartId(cartId);
     }
 }

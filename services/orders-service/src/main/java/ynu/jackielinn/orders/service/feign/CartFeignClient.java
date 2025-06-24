@@ -15,5 +15,5 @@ public interface CartFeignClient {
     Map<Long, Pair<Long, Integer>> getCartMap(@RequestParam Long userId, @RequestParam Long businessId);
 
     @PostMapping("/delete-by-cid")
-    Integer deleteByCartId(Long cartId);
+    Integer deleteByCartId(@RequestParam Long cartId);
 }

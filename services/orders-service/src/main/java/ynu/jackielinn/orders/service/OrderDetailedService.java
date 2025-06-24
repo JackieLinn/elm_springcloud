@@ -9,7 +9,7 @@ public interface OrderDetailedService extends IService<OrderDetailed> {
 
     Integer saveInOrderDetailed(Long orderId, Long foodId, Integer quantity);
 
-    boolean addInOrderDetailed(Long userId, Long businessId, Long orderId);
+    Boolean addInOrderDetailed(Long userId, Long businessId, Long orderId);
 
     Map<Long, Integer> getFoodInfoByOrderId(Long orderId);
 }

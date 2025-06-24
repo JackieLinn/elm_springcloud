@@ -128,3 +128,32 @@ create table account_role
     comment '用户角色表';
 
 
+
+INSERT INTO elm_springcloud.business (businessId, businessName, businessAddress, businessExplain, businessImg, orderTypeId, startPrice, deliveryPrice, remarks) VALUES (1, '万家饺子(云大店)', '云南省昆明市云南白药街001号', '各种饺子', '/img/sj01.png', 1, 15, 3, '无');
+INSERT INTO elm_springcloud.business (businessId, businessName, businessAddress, businessExplain, businessImg, orderTypeId, startPrice, deliveryPrice, remarks) VALUES (2, '营养早餐店', '云南省昆明市云南白药街002号', '各种早餐', '/img/sj02.png', 2, 8, 2, '无');
+INSERT INTO elm_springcloud.business (businessId, businessName, businessAddress, businessExplain, businessImg, orderTypeId, startPrice, deliveryPrice, remarks) VALUES (3, '宜良烤鸭', '云南省昆明市云南白药街003号', '面皮烤鸭', '/img/sj03.png', 3, 19, 2, '无');
+INSERT INTO elm_springcloud.business (businessId, businessName, businessAddress, businessExplain, businessImg, orderTypeId, startPrice, deliveryPrice, remarks) VALUES (4, '至尊汉堡王', '云南省昆明市云南白药街004号', '汉堡披萨', '/img/sj04.png', 4, 16, 3, '无');
+INSERT INTO elm_springcloud.business (businessId, businessName, businessAddress, businessExplain, businessImg, orderTypeId, startPrice, deliveryPrice, remarks) VALUES (5, '蜜雪冰城', '云南省昆明市云南白药街005号', '奶茶果茶', '/img/sj05.png', 5, 12, 2, '无');
+INSERT INTO elm_springcloud.business (businessId, businessName, businessAddress, businessExplain, businessImg, orderTypeId, startPrice, deliveryPrice, remarks) VALUES (6, '便捷快餐店', '云南省昆明市云南白药街006号', '各种快餐', '/img/sj06.png', 6, 9, 1, '无');
+INSERT INTO elm_springcloud.business (businessId, businessName, businessAddress, businessExplain, businessImg, orderTypeId, startPrice, deliveryPrice, remarks) VALUES (7, '广东肠粉店', '云南省昆明市云南白药街007号', '广东肠粉', '/img/sj07.png', 7, 12, 3, '无');
+INSERT INTO elm_springcloud.business (businessId, businessName, businessAddress, businessExplain, businessImg, orderTypeId, startPrice, deliveryPrice, remarks) VALUES (8, '桂林米粉', '云南省昆明市云南白药街008号', '面条米线', '/img/sj08.png', 8, 17, 2, '无');
+INSERT INTO elm_springcloud.business (businessId, businessName, businessAddress, businessExplain, businessImg, orderTypeId, startPrice, deliveryPrice, remarks) VALUES (9, '东北包子铺', '云南省昆明市云南白药街009号', '各种包子', '/img/sj09.png', 9, 6, 3, '无');
+INSERT INTO elm_springcloud.business (businessId, businessName, businessAddress, businessExplain, businessImg, orderTypeId, startPrice, deliveryPrice, remarks) VALUES (10, '广东烤鸡饭店', '云南省昆明市云南白药街010号', '各种烤鸡', '/img/sj01.png', 10, 20, 2, '无');
+
+
+INSERT INTO elm_springcloud.food (foodId, foodName, foodExplain, foodImg, foodPrice, businessId, remarks) VALUES (1, '纯肉鲜肉（水饺）', '新鲜猪肉', '/img/sp01.png', 15, 1, '无');
+INSERT INTO elm_springcloud.food (foodId, foodName, foodExplain, foodImg, foodPrice, businessId, remarks) VALUES (2, '玉米鲜肉（水饺）', '新鲜玉米水饺', '/img/sp02.png', 16, 1, '无');
+INSERT INTO elm_springcloud.food (foodId, foodName, foodExplain, foodImg, foodPrice, businessId, remarks) VALUES (3, '虾仁三鲜（蒸饺）', '虾仁蒸饺', '/img/sp03.png', 22, 1, '无');
+INSERT INTO elm_springcloud.food (foodId, foodName, foodExplain, foodImg, foodPrice, businessId, remarks) VALUES (4, '素三鲜（蒸饺）', '美味素三鲜', '/img/sp04.png', 13, 1, '无');
+INSERT INTO elm_springcloud.food (foodId, foodName, foodExplain, foodImg, foodPrice, businessId, remarks) VALUES (5, '角瓜鸡蛋（蒸饺）', '新鲜角瓜和鸡蛋', '/img/sp05.png', 15, 1, '无');
+INSERT INTO elm_springcloud.food (foodId, foodName, foodExplain, foodImg, foodPrice, businessId, remarks) VALUES (6, '小白菜肉（水饺）', '新鲜小白菜', '/img/sp06.png', 13, 1, '无');
+INSERT INTO elm_springcloud.food (foodId, foodName, foodExplain, foodImg, foodPrice, businessId, remarks) VALUES (7, '芹菜牛肉（水饺）', '新鲜芹菜', '/img/sp07.png', 17, 1, '无');
+INSERT INTO elm_springcloud.food (foodId, foodName, foodExplain, foodImg, foodPrice, businessId, remarks) VALUES (8, '青椒鲜肉（蒸饺）', '新鲜青椒和猪肉', '/img/sp08.png', 16, 1, '无');
+INSERT INTO elm_springcloud.food (foodId, foodName, foodExplain, foodImg, foodPrice, businessId, remarks) VALUES (9, '皮蛋瘦肉粥', '鲜美味粥', '/img/sp01.png', 5, 2, '无');
+INSERT INTO elm_springcloud.food (foodId, foodName, foodExplain, foodImg, foodPrice, businessId, remarks) VALUES (10, '鲜牛奶', '新鲜牛奶', '/img/sp02.png', 3, 2, '无');
+INSERT INTO elm_springcloud.food (foodId, foodName, foodExplain, foodImg, foodPrice, businessId, remarks) VALUES (11, '油条', '现炸油条', '/img/sp03.png', 2.5, 2, '无');
+
+
+INSERT INTO elm_springcloud.deliveryaddress (daId, contactName, contactSex, contactTel, address, userId) VALUES (1, 'admin', 1, '13888888888', '云南大学呈贡校区楸苑A521', 1);
+
+

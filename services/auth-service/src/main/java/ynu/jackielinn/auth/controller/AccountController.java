@@ -27,7 +27,7 @@ public class AccountController {
 
     @Operation(summary = "远程调用：支付操作", description = "远程调用：支付操作")
     @GetMapping("/pay")
-    public Boolean pay(@RequestParam Long userId, @RequestParam Double price) {
-        return accountService.pay(userId, price);
+    public RestBean<Boolean> pay(@RequestParam Long userId, @RequestParam Double price) {
+        return RestBean.success(accountService.pay(userId, price));
     }
 }

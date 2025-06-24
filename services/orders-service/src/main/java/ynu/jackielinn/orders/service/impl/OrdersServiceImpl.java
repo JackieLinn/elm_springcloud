@@ -18,6 +18,9 @@ import ynu.jackielinn.orders.service.OrdersService;
 import ynu.jackielinn.orders.service.feign.AccountFeignClient;
 import ynu.jackielinn.orders.service.feign.BusinessFeignClient;
 import ynu.jackielinn.orders.service.feign.FoodFeignClient;
+import ynu.jackielinn.common.entity.RestBean;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -128,7 +131,14 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders>
     public Boolean ordersPayment(PaymentRO ro) {
         Orders orders = getById(ro.getOrderId());
         if (orders == null) return false;
-        if (!accountFeignClient.pay(ro.getUserId(), orders.getOrderTotal())) return false;
+        // 从请求上下文中获取token
+        String token = RequestContextHolder.getRequestAttributes() != null ?
+                ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getHeader("Authorization") :
+                null;
+        if (token == null) return false;
+        RestBean<Boolean> payResult = accountFeignClient.pay(ro.getUserId(), orders.getOrderTotal(), token);
+        // 检查远程调用是否成功，以及支付结果是否为true
+        if (payResult.code() != 200 || !Boolean.TRUE.equals(payResult.data())) return false;
         orders.setOrderState(1);
         int result = baseMapper.updateById(orders);
         return result > 0;
