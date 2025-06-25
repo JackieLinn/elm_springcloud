@@ -1,0 +1,7 @@
+[mysqld]
+server-id=2  # 设置服务器唯一 ID，从服务器一般为 2
+relay-log=relay-log  # 启用中继日志，记录主服务器的操作供从服务器执行
+read-only=1  # 设置从服务器为只读模式，防止直接修改数据
+character-set-server=utf8mb4
+collation-server=utf8mb4_unicode_ci
+init_connect='SET NAMES utf8mb4'

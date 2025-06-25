@@ -1,14 +1,42 @@
 services:
-  mysql:
-    image: 'mysql:latest'
-    container_name: 'elm-springcloud-mysql'
+  mysql-master:
+    build:
+      context: .
+      dockerfile: ./configuration/docker/master.Dockerfile
+    container_name: elm-mysql-master
     environment:
-      - 'MYSQL_DATABASE=elm_springcloud'
-      - 'MYSQL_PASSWORD=secret'
-      - 'MYSQL_ROOT_PASSWORD=12345678'
-      - 'MYSQL_USER=myuser'
+      MYSQL_ROOT_PASSWORD: 12345678
     ports:
-      - '3306:3306'
+      - "33061:3306"
+    volumes:
+      - ./docker/mysql/master:/var/lib/mysql
+
+  mysql-slave:
+    build:
+      context: .
+      dockerfile: ./configuration/docker/slave.Dockerfile
+    container_name: elm-mysql-slave
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345678
+    ports:
+      - "33062:3306"
+    depends_on:
+      - mysql-master
+    volumes:
+      - ./docker/mysql/slave:/var/lib/mysql
+
+  shardingsphere:
+    image: apache/shardingsphere-proxy:latest
+    container_name: shardingsphere
+    depends_on:
+      - mysql-master
+      - mysql-slave
+    ports:
+      - "33070:3307"
+    volumes:
+      - ./configuration/shardingsphere/config:/opt/shardingsphere-proxy/conf
+      - ./configuration/shardingsphere/lib:/opt/shardingsphere-proxy/ext-lib
+
   redis:
     image: 'redis:latest'
     container_name: 'elm-springcloud-redis'
@@ -16,6 +44,7 @@ services:
       - 'REDIS_PASSWORD=12345678'
     ports:
       - '6379:6379'
+
   rabbitmq:
     image: 'rabbitmq:management'
     container_name: 'elm-springcloud-rabbitmq'

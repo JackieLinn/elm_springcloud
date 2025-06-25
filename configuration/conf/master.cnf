@@ -1,0 +1,7 @@
+[mysqld]
+server-id=1  # 设置服务器唯一 ID，主服务器一般为 1
+log-bin=mysql-bin  # 启用二进制日志，记录所有数据更改
+binlog-do-db=elm_springcloud  # 仅记录 elm_springcloud 数据库的更改到二进制日志
+character-set-server=utf8mb4
+collation-server=utf8mb4_unicode_ci
+init_connect='SET NAMES utf8mb4'
