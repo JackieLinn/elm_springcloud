@@ -35,3 +35,6 @@ build/
 ### cursor ###
 .cursorindexingignore
 *.specstory
+
+### Docker ###
+/docker/

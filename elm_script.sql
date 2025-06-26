@@ -154,6 +154,11 @@ INSERT INTO food (foodId, foodName, foodExplain, foodImg, foodPrice, businessId,
 INSERT INTO food (foodId, foodName, foodExplain, foodImg, foodPrice, businessId, remarks) VALUES (11, '油条', '现炸油条', '/img/sp03.png', 2.5, 2, '无');
 
 
-INSERT INTO deliveryaddress (daId, contactName, contactSex, contactTel, address, userId) VALUES (1, 'admin', 1, '13888888888', '云南大学呈贡校区楸苑A521', 1);
+INSERT INTO elm_springcloud.role (roleId, roleName) VALUES (1, '管理员');
+INSERT INTO elm_springcloud.role (roleId, roleName) VALUES (2, '商家');
+INSERT INTO elm_springcloud.role (roleId, roleName) VALUES (3, '普通用户');
+
+
+INSERT INTO elm_springcloud.deliveryaddress (daId, contactName, contactSex, contactTel, address, userId) VALUES (1, 'admin', 1, '13888888888', '云南大学呈贡校区楸苑A521', 1);
 
 
