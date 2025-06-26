@@ -4,11 +4,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ynu.jackielinn.auth.dto.response.AccountVO;
+import ynu.jackielinn.auth.entity.AccountRole;
 import ynu.jackielinn.auth.service.AccountService;
+import ynu.jackielinn.auth.service.AccountRoleService;
 import ynu.jackielinn.common.entity.RestBean;
 
 @RestController
@@ -18,6 +21,9 @@ public class AccountController {
 
     @Resource
     AccountService accountService;
+
+    @Resource
+    AccountRoleService accountRoleService;
 
     @Operation(summary = "通过用户编号获取用户信息", description = "通过用户编号获取用户信息")
     @GetMapping("/get-account-by-userId")
@@ -29,5 +35,18 @@ public class AccountController {
     @GetMapping("/pay")
     public RestBean<Boolean> pay(@RequestParam Long userId, @RequestParam Double price) {
         return RestBean.success(accountService.pay(userId, price));
+    }
+
+    @Operation(summary = "更新用户角色", description = "根据用户ID更新其角色ID")
+    @PostMapping("/role/update")
+    public RestBean<Boolean> updateUserRole(@RequestParam Long userId, @RequestParam Long roleId) {
+        // 先查找用户角色记录
+        AccountRole accountRole = accountRoleService.findRIDByUID(userId);
+        if (accountRole == null) {
+            return RestBean.failure(404, "用户角色记录不存在");
+        }
+        accountRole.setRoleId(roleId);
+        boolean updated = accountRoleService.updateById(accountRole);
+        return updated ? RestBean.success(true) : RestBean.failure(500, "更新失败");
     }
 }
