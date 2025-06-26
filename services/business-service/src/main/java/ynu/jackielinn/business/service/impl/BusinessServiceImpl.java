@@ -2,9 +2,12 @@ package ynu.jackielinn.business.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import ynu.jackielinn.business.dto.response.BusinessVO;
 import ynu.jackielinn.business.entity.Business;
+import ynu.jackielinn.business.entity.BusinessEsDoc;
+import ynu.jackielinn.business.mapper.BusinessEsRepository;
 import ynu.jackielinn.business.mapper.BusinessMapper;
 import ynu.jackielinn.business.service.BusinessService;
 
@@ -15,6 +18,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class BusinessServiceImpl extends ServiceImpl<BusinessMapper, Business> implements BusinessService {
+
+    @Resource
+    private BusinessEsRepository businessEsRepository;
 
     /**
      * 获取所有的点餐分类
@@ -117,5 +123,18 @@ public class BusinessServiceImpl extends ServiceImpl<BusinessMapper, Business> i
         List<Business> businesses = baseMapper.selectList(businessWrapper);
         return businesses.stream()
                 .collect(Collectors.toMap(Business::getBusinessId, b -> b));
+    }
+
+
+
+    /**
+     * 根据搜索词获取相关商家的列表信息
+     *
+     * @param keyword 搜索关键词，用于查询ElasticSearch中的商家信息
+     * @return 返回商家列表信息 如果查询不到任何记录，则返回空列表
+     */
+    @Override
+    public List<BusinessEsDoc> searchByName(String keyword) {
+        return businessEsRepository.findByBusinessNameContaining(keyword);
     }
 }
