@@ -37,13 +37,97 @@ services:
       - ./configuration/shardingsphere/config:/opt/shardingsphere-proxy/conf
       - ./configuration/shardingsphere/lib:/opt/shardingsphere-proxy/ext-lib
 
-  redis:
+  redis-master:
     image: 'redis:latest'
-    container_name: 'elm-springcloud-redis'
-    environment:
-      - 'REDIS_PASSWORD=12345678'
+    container_name: redis-master
+    command: redis-server
+      --requirepass 12345678
+      --masterauth 12345678
+      --slave-serve-stale-data yes
+      --slave-read-only yes
+      --repl-diskless-sync no
+      --repl-diskless-sync-delay 5
+      --repl-diskless-sync-delay 5
+      --repl-disable-tcp-nodelay no
+      --slave-priority 200
+      --port 6379
     ports:
       - '6379:6379'
+    sysctls:
+      net.core.somaxconn: '511'
+
+  redis-slave1:
+    image: 'redis:latest'
+    container_name: redis-slave1
+    ports:
+      - '6380:6380'
+    command: redis-server
+      --requirepass 12345678
+      --slave-serve-stale-data yes
+      --slave-read-only yes
+      --repl-diskless-sync no
+      --repl-diskless-sync-delay 5
+      --repl-diskless-sync-delay 5
+      --repl-disable-tcp-nodelay no
+      --slave-priority 150
+      --slaveof redis-master 6379
+      --masterauth 12345678
+      --port 6380
+    sysctls:
+      net.core.somaxconn: '511'
+
+  redis-slave2:
+    image: 'redis:latest'
+    container_name: redis-slave2
+    ports:
+      - '6381:6381'
+    command: redis-server
+      --requirepass 12345678
+      --slave-serve-stale-data yes
+      --slave-read-only yes
+      --repl-diskless-sync no
+      --repl-diskless-sync-delay 5
+      --repl-diskless-sync-delay 5
+      --repl-disable-tcp-nodelay no
+      --slave-priority 100
+      --slaveof redis-master 6379
+      --masterauth 12345678
+      --port 6381
+    sysctls:
+      net.core.somaxconn: '511'
+
+  sentinel1:
+    image: 'redis:latest'
+    container_name: redis-sentinel1
+    ports:
+      - '26379:26379'
+    command: redis-sentinel /usr/local/etc/redis/sentinel.conf
+    volumes:
+      - ./configuration/conf/sentinel1.conf:/usr/local/etc/redis/sentinel.conf
+    sysctls:
+      net.core.somaxconn: '511'
+
+  sentinel2:
+    image: 'redis:latest'
+    container_name: redis-sentinel2
+    ports:
+      - '26380:26380'
+    command: redis-sentinel /usr/local/etc/redis/sentinel.conf
+    volumes:
+      - ./configuration/conf/sentinel2.conf:/usr/local/etc/redis/sentinel.conf
+    sysctls:
+      net.core.somaxconn: '511'
+
+  sentinel3:
+    image: 'redis:latest'
+    container_name: redis-sentinel3
+    ports:
+      - '26381:26381'
+    command: redis-sentinel /usr/local/etc/redis/sentinel.conf
+    volumes:
+      - ./configuration/conf/sentinel3.conf:/usr/local/etc/redis/sentinel.conf
+    sysctls:
+      net.core.somaxconn: '511'
 
   rabbitmq:
     image: 'rabbitmq:management'
