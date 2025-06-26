@@ -32,5 +32,9 @@ build/
 ### VS Code ###
 .vscode/
 
+### cursor ###
+.cursorindexingignore
+*.specstory
+
 ### Docker ###
 /docker/

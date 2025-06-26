@@ -3,6 +3,7 @@ package ynu.jackielinn.business.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import ynu.jackielinn.business.dto.response.BusinessVO;
 import ynu.jackielinn.business.entity.Business;
+import ynu.jackielinn.business.entity.BusinessEsDoc;
 
 import java.util.List;
 import java.util.Map;
@@ -21,4 +22,6 @@ public interface BusinessService extends IService<Business> {
     Double getDeliveryPriceByBusinessId(Long businessId);
 
     Map<Long, Business> getBusinessInfo(Set<Long> businessIds);
+
+    List<BusinessEsDoc> searchByName(String keyword);
 }

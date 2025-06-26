@@ -6,6 +6,7 @@ import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 import ynu.jackielinn.business.dto.response.BusinessVO;
 import ynu.jackielinn.business.entity.Business;
+import ynu.jackielinn.business.entity.BusinessEsDoc;
 import ynu.jackielinn.business.service.BusinessService;
 import ynu.jackielinn.common.entity.RestBean;
 
@@ -90,5 +91,11 @@ public class BusinessController {
     @GetMapping("/get-business-info")
     public Map<Long, Business> getBusinessInfo(@RequestParam Set<Long> businessIds) {
         return businessService.getBusinessInfo(businessIds);
+    }
+
+    @Operation(summary = "搜索商家", description = "搜索商家")
+    @GetMapping("/search")
+    public RestBean<List<BusinessEsDoc>> search(@RequestParam String keyword) {
+        return RestBean.success(businessService.searchByName(keyword));
     }
 }
