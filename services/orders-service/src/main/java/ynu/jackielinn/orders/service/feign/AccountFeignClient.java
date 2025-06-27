@@ -11,4 +11,7 @@ public interface AccountFeignClient {
 
     @GetMapping("/pay")
     RestBean<Boolean> pay(@RequestParam Long userId, @RequestParam Double price, @RequestHeader("Authorization") String token);
+
+    @GetMapping("/refund")
+    RestBean<Boolean> refund(@RequestParam Long userId, @RequestParam Double price, @RequestHeader("Authorization") String token);
 }

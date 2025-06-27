@@ -7,10 +7,14 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import ynu.jackielinn.business.entity.Business;
 import ynu.jackielinn.business.entity.BusinessApply;
+import ynu.jackielinn.business.entity.UserBusiness;
 import ynu.jackielinn.business.mapper.BusinessApplyMapper;
 import ynu.jackielinn.business.service.BusinessApplyService;
 import ynu.jackielinn.business.service.feign.AccountFeignClient;
+import ynu.jackielinn.business.service.UserBusinessService;
+import ynu.jackielinn.business.service.BusinessService;
 
 @Service
 public class BusinessApplyServiceImpl implements BusinessApplyService {
@@ -19,6 +23,12 @@ public class BusinessApplyServiceImpl implements BusinessApplyService {
 
     @Resource
     private AccountFeignClient accountFeignClient;
+
+    @Resource
+    private UserBusinessService userBusinessService;
+
+    @Resource
+    private BusinessService businessService;
 
     /**
      * 商家提交入驻申请
@@ -100,6 +110,26 @@ public class BusinessApplyServiceImpl implements BusinessApplyService {
                     // 可加日志记录异常
                 }
             }
+            // 1. 新增商家
+            Business business = new Business();
+            business.setBusinessName(apply.getBusinessName());
+            business.setBusinessAddress(apply.getBusinessAddress());
+            business.setBusinessExplain(apply.getBusinessDesc());
+            business.setBusinessImg("http://example.com/img.jpg"); // 可根据实际情况设置
+            business.setOrderTypeId(1); // 可根据实际情况设置
+            business.setStartPrice(0.0); // 可根据实际情况设置
+            business.setDeliveryPrice(0.0); // 可根据实际情况设置
+            business.setRemarks(null); // 可根据实际情况设置
+            businessService.save(business); // 保存后 businessId 自动回填
+            Long businessId = business.getBusinessId();
+            // 2. 关联 user_business
+            if (apply.getApplicantId() != null && businessId != null) {
+                UserBusiness userBusiness = new UserBusiness(null, apply.getApplicantId(), businessId);
+                userBusinessService.save(userBusiness);
+            }
+            // 3. 可选：apply 表回填 businessId 字段（如有）
+            // apply.setBusinessId(businessId);
+            // businessApplyMapper.updateById(apply);
         }
         return updated > 0;
     }

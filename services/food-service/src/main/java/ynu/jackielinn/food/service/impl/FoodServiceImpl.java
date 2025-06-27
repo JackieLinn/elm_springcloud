@@ -15,21 +15,43 @@ import java.util.stream.Collectors;
 
 @Service
 public class FoodServiceImpl extends ServiceImpl<FoodMapper, Food> implements FoodService {
-
     /**
-     * 根据商家ID查询食品列表
+     * 商家/管理端根据商家ID查询所有食品列表
      *
      * @param businessId 商家ID，不能为空
      * @return 食品列表，列表中的元素是FoodVO对象
      * @throws IllegalArgumentException 如果businessId为空，则抛出此异常
      */
     @Override
-    public List<FoodVO> listFoodByBusinessId(Long businessId) {
+    public List<FoodVO> listAllFoodByBusinessId(Long businessId) {
         if (businessId == null) {
             throw new IllegalArgumentException("Business ID cannot be null");
         }
         QueryWrapper<Food> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("businessId", businessId);
+        List<Food> foods = baseMapper.selectList(queryWrapper);
+        return foods.stream()
+                .map(f -> f.asViewObject(FoodVO.class))
+                .collect(Collectors.toList());
+    }
+
+
+    /**
+     * 客户端根据商家ID查询所有上架食品列表
+     *
+     * @param businessId 商家ID，不能为空
+     * @return 食品列表，列表中的元素是FoodVO对象
+     * @throws IllegalArgumentException 如果businessId为空，则抛出此异常
+     */
+    @Override
+    public List<FoodVO> listOnShelfFoodByBusinessId(Long businessId) {
+        if (businessId == null) {
+            throw new IllegalArgumentException("Business ID cannot be null");
+        }
+        QueryWrapper<Food> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("businessId", businessId)
+                .eq("foodStatus", 1)
+                .eq("isDeleted", 0);
         List<Food> foods = baseMapper.selectList(queryWrapper);
         return foods.stream()
                 .map(f -> f.asViewObject(FoodVO.class))
@@ -68,4 +90,34 @@ public class FoodServiceImpl extends ServiceImpl<FoodMapper, Food> implements Fo
         return foods.stream()
                 .collect(Collectors.toMap(Food::getFoodId, f -> f));
     }
+
+    @Override
+    public boolean addFood(Food food) {
+        food.setFoodStatus(0); // 默认下架
+        food.setIsDeleted(0); // 默认未删除
+        return this.save(food);
+    }
+
+    @Override
+    public boolean updateFood(Food food) {
+        return this.updateById(food);
+    }
+
+    @Override
+    public boolean deleteFood(Long foodId) {
+        Food food = this.getById(foodId);
+        if (food == null || food.getIsDeleted() != 0) return false;
+        food.setIsDeleted(1);
+        return this.updateById(food);
+    }
+
+    @Override
+    public boolean updateStatus(Long foodId, Integer foodStatus) {
+        Food food = this.getById(foodId);
+        if (food == null || food.getIsDeleted() != 0) return false;
+        food.setFoodStatus(foodStatus);
+        return this.updateById(food);
+    }
+
+
 }

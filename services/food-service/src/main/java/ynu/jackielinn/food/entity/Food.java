@@ -1,12 +1,11 @@
 package ynu.jackielinn.food.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import ynu.jackielinn.common.entity.BaseData;
+
+import java.time.LocalDateTime;
 
 @Data
 @TableName("food")
@@ -26,4 +25,12 @@ public class Food implements BaseData {
     Long businessId;
     @TableField("remarks")
     String remarks;
+    @TableField("foodStatus")
+    Integer foodStatus;
+    @TableField("isDeleted")
+    Integer isDeleted;
+    @TableField(value = "createTime", fill = FieldFill.INSERT)
+    LocalDateTime createTime;
+    @TableField(value = "updateTime", fill = FieldFill.INSERT_UPDATE)
+    LocalDateTime updateTime;
 }

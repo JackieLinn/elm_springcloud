@@ -8,6 +8,7 @@ import ynu.jackielinn.business.dto.response.BusinessVO;
 import ynu.jackielinn.business.entity.Business;
 import ynu.jackielinn.business.entity.BusinessEsDoc;
 import ynu.jackielinn.business.service.BusinessService;
+import ynu.jackielinn.business.service.UserBusinessService;
 import ynu.jackielinn.common.entity.RestBean;
 
 import java.util.HashMap;
@@ -22,6 +23,9 @@ public class BusinessController {
 
     @Resource
     BusinessService businessService;
+
+    @Resource
+    UserBusinessService userBusinessService;
 
     @Operation(summary = "获取所有点餐分类", description = "获取所有点餐分类")
     @GetMapping("/get-all-categories")
@@ -97,5 +101,53 @@ public class BusinessController {
     @GetMapping("/search")
     public RestBean<List<BusinessEsDoc>> search(@RequestParam String keyword) {
         return RestBean.success(businessService.searchByName(keyword));
+    }
+
+    @Operation(summary = "根据用户ID获取其所有商家信息", description = "商家端：我的店铺列表")
+    @GetMapping("/list-by-user")
+    public RestBean<List<BusinessVO>> listBusinessByUserId(@RequestParam Long userId) {
+        List<Long> businessIds = userBusinessService.getBusinessIdsByUserId(userId);
+        return RestBean.success(businessIds.stream().map(businessService::listBusinessByBusinessId).toList());
+    }
+
+    @Operation(summary = "修改商家信息（带用户校验）", description = "商家端修改自己的店铺信息，需校验归属")
+    @PostMapping("/update-info-by-user")
+    public RestBean<Boolean> updateBusinessInfoByUser(@RequestParam Long userId, @RequestBody Business business) {
+        boolean owns = userBusinessService.checkUserOwnsBusiness(userId, business.getBusinessId());
+        if (!owns) return RestBean.failure(403, "无权修改该商家信息");
+        return RestBean.success(businessService.updateBusinessInfo(business));
+    }
+
+    @Operation(summary = "远程调用：校验用户是否拥有商家", description = "供其它服务校验用户-商家归属")
+    @GetMapping("/user-business/check")
+    public RestBean<Boolean> checkUserOwnsBusiness(@RequestParam Long userId, @RequestParam Long businessId) {
+        boolean owns = userBusinessService.checkUserOwnsBusiness(userId, businessId);
+        return RestBean.success(owns);
+    }
+
+    /**
+     * 管理员禁用商家
+     * 该接口用于将指定商家的状态设为禁用（status=0），禁用后商家在客户端不可见，商家端可见但为禁用状态
+     * @param businessId 商家ID
+     * @return 操作结果，成功返回true，失败返回false
+     */
+    @Operation(summary = "管理员禁用商家", description = "将商家状态设为禁用")
+    @PostMapping("/admin/disable")
+    public RestBean<Boolean> disableBusiness(@RequestParam Long businessId) {
+        boolean result = businessService.updateBusinessStatus(businessId, 0);
+        return result ? RestBean.success(true) : RestBean.failure(400, "禁用失败");
+    }
+
+    /**
+     * 管理员启用商家
+     * 该接口用于将指定商家的状态设为正常（status=1），恢复后商家在客户端可见
+     * @param businessId 商家ID
+     * @return 操作结果，成功返回true，失败返回false
+     */
+    @Operation(summary = "管理员启用商家", description = "将商家状态设为正常")
+    @PostMapping("/admin/enable")
+    public RestBean<Boolean> enableBusiness(@RequestParam Long businessId) {
+        boolean result = businessService.updateBusinessStatus(businessId, 1);
+        return result ? RestBean.success(true) : RestBean.failure(400, "启用失败");
     }
 }

@@ -10,7 +10,6 @@ import ynu.jackielinn.common.entity.BaseData;
 
 @Data
 @TableName("business")
-@AllArgsConstructor
 public class Business implements BaseData {
     @TableId(type = IdType.AUTO)
     Long businessId;
@@ -30,4 +29,7 @@ public class Business implements BaseData {
     Double deliveryPrice;
     @TableField("remarks")
     String remarks;
+    @TableField("status")
+    Integer status; // 1: 正常, 0: 禁用
+
 }

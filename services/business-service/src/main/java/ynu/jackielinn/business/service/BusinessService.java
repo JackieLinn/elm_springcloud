@@ -24,4 +24,17 @@ public interface BusinessService extends IService<Business> {
     Map<Long, Business> getBusinessInfo(Set<Long> businessIds);
 
     List<BusinessEsDoc> searchByName(String keyword);
+
+    /**
+     * 修改商家信息
+     */
+    boolean updateBusinessInfo(Business business);
+
+    /**
+     * 修改商家状态（禁用/启用）
+     * @param businessId 商家ID
+     * @param status 商家状态（1: 正常, 0: 禁用）
+     * @return 操作结果，成功返回true，失败返回false
+     */
+    boolean updateBusinessStatus(Long businessId, int status);
 }

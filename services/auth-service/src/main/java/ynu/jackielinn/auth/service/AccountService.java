@@ -7,6 +7,7 @@ import ynu.jackielinn.auth.dto.request.EmailRegisterRO;
 import ynu.jackielinn.auth.dto.request.EmailResetRO;
 import ynu.jackielinn.auth.dto.response.AccountVO;
 import ynu.jackielinn.auth.entity.Account;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 
 public interface AccountService extends IService<Account>, UserDetailsService {
 
@@ -23,4 +24,8 @@ public interface AccountService extends IService<Account>, UserDetailsService {
     AccountVO getAccountByUserId(Long userId);
 
     Boolean pay(Long userId, Double price);
+
+    Boolean refund(Long userId, Double price);
+
+    IPage<AccountVO> listAccounts(int pageNum, int pageSize, Long roleId);
 }

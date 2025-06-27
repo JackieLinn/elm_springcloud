@@ -18,4 +18,6 @@ public class BusinessVO {
     Double startPrice;
     @Schema(description = "商家配送费")
     Double deliveryPrice;
+    @Schema(description = "商家状态")
+    Integer status;
 }
