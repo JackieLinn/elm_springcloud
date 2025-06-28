@@ -3,6 +3,7 @@ package ynu.jackielinn.orders.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.annotation.Resource;
+import org.apache.seata.spring.annotation.GlobalTransactional;
 import org.springframework.stereotype.Service;
 import ynu.jackielinn.common.utils.Pair;
 import ynu.jackielinn.orders.dto.request.OrdersRO;
@@ -57,6 +58,7 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders>
      * @param ro 包含订单相关信息的记录对象，如用户ID、商家ID和总价格
      * @return 成功创建订单后返回订单ID，否则返回null
      */
+    @GlobalTransactional
     @Override
     public Long createOrders(OrdersRO ro) {
         Orders order = new Orders();
@@ -84,6 +86,7 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders>
      * @param orderId 订单ID，用于查询订单和相关业务信息
      * @return OrdersBusinessVO 返回一个包含业务名称、配送费用和订单总价的订单业务信息对象
      */
+    @GlobalTransactional
     @Override
     public OrdersBusinessVO getOrdersBusinessInfo(Long orderId) {
         Orders orders = getById(orderId);
@@ -98,6 +101,7 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders>
      * @param orderId 订单ID，用于查询订单中的食品信息
      * @return 返回一个 OrdersFoodVO 对象列表，每个对象包含食品名称、图片、价格和数量
      */
+    @GlobalTransactional
     @Override
     public List<OrdersFoodVO> getOrdersFoodInfo(Long orderId) {
         List<OrdersFoodVO> ordersFoodVOList = new ArrayList<>();
@@ -128,6 +132,7 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders>
      * @param ro 包含支付相关信息的记录对象
      * @return 支付是否成功
      */
+    @GlobalTransactional
     @Override
     public Boolean ordersPayment(PaymentRO ro) {
         Orders orders = getById(ro.getOrderId());
@@ -229,6 +234,7 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders>
      * @param userId 用户ID
      * @return 返回一个包含已支付和未支付订单信息的对象
      */
+    @GlobalTransactional
     @Override
     public AllOrderListVO getAllOrderInfo(Long userId) {
         AllOrderListVO allOrderListVO = new AllOrderListVO();

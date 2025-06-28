@@ -138,3 +138,13 @@ services:
     ports:
       - '5672:5672'
       - '15672:15672'
+
+  seata-server:
+    image: apache/seata-server:2.1.0
+    container_name: elm-seata
+    environment:
+      - SEATA_IP=127.0.0.1
+      - SEATA_PORT=8091
+    ports:
+      - "8091:8091"
+      - "7091:7091"
