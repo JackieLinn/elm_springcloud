@@ -14,6 +14,8 @@ import ynu.jackielinn.auth.service.AccountService;
 import ynu.jackielinn.auth.service.AccountRoleService;
 import ynu.jackielinn.common.entity.RestBean;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/account")
 @Tag(name = "用户相关接口", description = "与用户相关的操作接口")
@@ -48,5 +50,17 @@ public class AccountController {
         accountRole.setRoleId(roleId);
         boolean updated = accountRoleService.updateById(accountRole);
         return updated ? RestBean.success(true) : RestBean.failure(500, "更新失败");
+    }
+
+    @Operation(summary = "远程调用：退款操作", description = "远程调用：退款操作")
+    @GetMapping("/refund")
+    public RestBean<Boolean> refund(@RequestParam Long userId, @RequestParam Double price) {
+        return RestBean.success(accountService.refund(userId, price));
+    }
+
+    @Operation(summary = "管理员分页查询所有用户", description = "支持按角色筛选")
+    @GetMapping("/admin/list")
+    public RestBean<com.baomidou.mybatisplus.core.metadata.IPage<AccountVO>> listAccounts(@RequestParam int pageNum, @RequestParam int pageSize, @RequestParam(required = false) Long roleId) {
+        return RestBean.success(accountService.listAccounts(pageNum, pageSize, roleId));
     }
 }

@@ -44,6 +44,7 @@ public class BusinessServiceImpl extends ServiceImpl<BusinessMapper, Business> i
     @Override
     public List<BusinessVO> getRecommendBusiness() {
         QueryWrapper<Business> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("status", 1);
         queryWrapper.orderByAsc("businessId")
                 .last("LIMIT 6");
         List<Business> businesses = baseMapper.selectList(queryWrapper);
@@ -60,19 +61,15 @@ public class BusinessServiceImpl extends ServiceImpl<BusinessMapper, Business> i
      */
     @Override
     public List<BusinessVO> listBusinessByOrderTypeId(Integer orderTypeId) {
-        if (orderTypeId == 0) {
-            List<Business> businesses = baseMapper.selectList(null);
-            return businesses.stream()
-                    .map(b -> b.asViewObject(BusinessVO.class))
-                    .collect(Collectors.toList());
-        } else {
-            QueryWrapper<Business> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<Business> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("status", 1);
+        if (orderTypeId != 0) {
             queryWrapper.eq("orderTypeId", orderTypeId);
-            List<Business> businesses = baseMapper.selectList(queryWrapper);
-            return businesses.stream()
-                    .map(b -> b.asViewObject(BusinessVO.class))
-                    .collect(Collectors.toList());
         }
+        List<Business> businesses = baseMapper.selectList(queryWrapper);
+        return businesses.stream()
+                .map(b -> b.asViewObject(BusinessVO.class))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -125,8 +122,6 @@ public class BusinessServiceImpl extends ServiceImpl<BusinessMapper, Business> i
                 .collect(Collectors.toMap(Business::getBusinessId, b -> b));
     }
 
-
-
     /**
      * 根据搜索词获取相关商家的列表信息
      *
@@ -136,5 +131,36 @@ public class BusinessServiceImpl extends ServiceImpl<BusinessMapper, Business> i
     @Override
     public List<BusinessEsDoc> searchByName(String keyword) {
         return businessEsRepository.findByBusinessNameContaining(keyword);
+    }
+
+    @Override
+    public boolean updateBusinessInfo(Business business) {
+        // 只允许更新部分字段，防止误操作
+        Business dbBusiness = baseMapper.selectById(business.getBusinessId());
+        if (dbBusiness == null) return false;
+        dbBusiness.setBusinessName(business.getBusinessName());
+        dbBusiness.setBusinessAddress(business.getBusinessAddress());
+        dbBusiness.setBusinessExplain(business.getBusinessExplain());
+        dbBusiness.setBusinessImg(business.getBusinessImg());
+        dbBusiness.setOrderTypeId(business.getOrderTypeId());
+        dbBusiness.setStartPrice(business.getStartPrice());
+        dbBusiness.setDeliveryPrice(business.getDeliveryPrice());
+        dbBusiness.setRemarks(business.getRemarks());
+        return baseMapper.updateById(dbBusiness) > 0;
+    }
+
+    /**
+     * 修改商家状态（禁用/启用）
+     * 该方法根据商家ID修改其状态（status），1为正常，0为禁用
+     * @param businessId 商家ID
+     * @param status 商家状态（1: 正常, 0: 禁用）
+     * @return 操作结果，成功返回true，失败返回false
+     */
+    @Override
+    public boolean updateBusinessStatus(Long businessId, int status) {
+        Business business = baseMapper.selectById(businessId);
+        if (business == null) return false;
+        business.setStatus(status);
+        return baseMapper.updateById(business) > 0;
     }
 }

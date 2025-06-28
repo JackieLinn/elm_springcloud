@@ -13,4 +13,10 @@ public class AccountFeignClientFallback implements AccountFeignClient {
         logger.warn("服务降级：无法调用支付服务，用户ID：{}, 金额：{}", userId, price);
         return RestBean.failure(503, "支付服务当前不可用");
     }
+
+    @Override
+    public RestBean<Boolean> refund(Long userId, Double price, String token) {
+        logger.warn("服务降级：无法调用退款服务，用户ID：{}, 金额：{}", userId, price);
+        return RestBean.failure(503, "退款服务当前不可用");
+    }
 }

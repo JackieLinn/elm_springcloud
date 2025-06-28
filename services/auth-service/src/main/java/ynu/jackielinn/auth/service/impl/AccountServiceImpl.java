@@ -24,6 +24,7 @@ import ynu.jackielinn.auth.utils.AuthConvertUtils;
 import ynu.jackielinn.auth.utils.FlowUtils;
 import ynu.jackielinn.common.utils.Const;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -173,6 +174,15 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
         return result > 0;
     }
 
+    @Override
+    public Boolean refund(Long userId, Double price) {
+        Account account = baseMapper.selectById(userId);
+        if (account == null) return false;
+        account.setBalance(account.getBalance() + price);
+        int result = baseMapper.updateById(account);
+        return result > 0;
+    }
+
     /**
      * 从数据库中通过用户名或邮箱查找用户详细信息
      *
@@ -221,5 +231,23 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
      */
     private boolean existsAccountByUsername(String username) {
         return this.baseMapper.exists(Wrappers.<Account>query().eq("username", username));
+    }
+
+    @Override
+    public com.baomidou.mybatisplus.core.metadata.IPage<AccountVO> listAccounts(int pageNum, int pageSize, Long roleId) {
+        com.baomidou.mybatisplus.core.conditions.query.QueryWrapper<Account> wrapper = new com.baomidou.mybatisplus.core.conditions.query.QueryWrapper<>();
+        if (roleId != null) {
+            List<Long> userIds = accountRoleService.list(
+                new com.baomidou.mybatisplus.core.conditions.query.QueryWrapper<ynu.jackielinn.auth.entity.AccountRole>().eq("roleId", roleId)
+            ).stream().map(ynu.jackielinn.auth.entity.AccountRole::getUserId).toList();
+            if (userIds.isEmpty()) return new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageNum, pageSize);
+            wrapper.in("userId", userIds);
+        }
+        com.baomidou.mybatisplus.extension.plugins.pagination.Page<Account> page = new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageNum, pageSize);
+        com.baomidou.mybatisplus.core.metadata.IPage<Account> result = this.page(page, wrapper);
+        // 转换为 AccountVO 分页对象
+        com.baomidou.mybatisplus.extension.plugins.pagination.Page<AccountVO> voPage = new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageNum, pageSize, result.getTotal());
+        voPage.setRecords(result.getRecords().stream().map(AuthConvertUtils::account2VO).toList());
+        return voPage;
     }
 }

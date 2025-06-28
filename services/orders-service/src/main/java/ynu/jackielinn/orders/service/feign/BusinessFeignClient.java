@@ -17,4 +17,7 @@ public interface BusinessFeignClient {
 
     @GetMapping("/get-business-info")
     Map<Long, Business> getBusinessInfo(@RequestParam Set<Long> businessIds);
+
+    @GetMapping("/user-business/check")
+    Boolean checkUserOwnsBusiness(@RequestParam("userId") Long userId, @RequestParam("businessId") Long businessId);
 }

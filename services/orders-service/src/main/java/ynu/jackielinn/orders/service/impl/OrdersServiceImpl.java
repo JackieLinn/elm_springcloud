@@ -22,6 +22,7 @@ import ynu.jackielinn.orders.service.feign.FoodFeignClient;
 import ynu.jackielinn.common.entity.RestBean;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import ynu.jackielinn.orders.enums.OrderStateEnum;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -253,5 +254,80 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders>
         Orders orders = getById(ro.getOrderId());
         orders.setDaId(ro.getDaId());
         return baseMapper.updateById(orders);
+    }
+
+    @Override
+    public List<Orders> listOrdersByBusinessId(Long userId, Long businessId) {
+        Boolean owns = businessFeignClient.checkUserOwnsBusiness(userId, businessId);
+        if (!Boolean.TRUE.equals(owns)) throw new RuntimeException("无权查看该商家订单");
+        QueryWrapper<Orders> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("businessId", businessId);
+        return this.list(queryWrapper);
+    }
+
+    @Override
+    public OrderDetailVO getOrderDetail(Long userId, Long orderId) {
+        Orders order = this.getById(orderId);
+        if (order == null) return null;
+        Boolean owns = businessFeignClient.checkUserOwnsBusiness(userId, order.getBusinessId());
+        if (!Boolean.TRUE.equals(owns)) throw new RuntimeException("无权查看该订单");
+        OrderDetailVO vo = new OrderDetailVO();
+        vo.setOrderId(order.getOrderId());
+        vo.setOrderDate(order.getOrderDate());
+        vo.setOrderTotal(order.getOrderTotal());
+        vo.setOrderState(order.getOrderState());
+        BusinessVO businessVO = businessFeignClient.listBusinessByBusinessIdRemote(order.getBusinessId());
+        vo.setBusinessName(businessVO.getBusinessName());
+        vo.setDeliveryPrice(businessVO.getDeliveryPrice());
+        List<OrdersFoodVO> foodList = getOrdersFoodInfo(orderId);
+        vo.setFoodList(foodList);
+        return vo;
+    }
+
+    @Override
+    public Boolean acceptOrder(Long userId, Long orderId) {
+        Orders order = getById(orderId);
+        if (order == null) return false;
+        Boolean owns = businessFeignClient.checkUserOwnsBusiness(userId, order.getBusinessId());
+        if (!Boolean.TRUE.equals(owns)) throw new RuntimeException("无权操作该订单");
+        if (order.getOrderState() != OrderStateEnum.UNPAID.getCode() && order.getOrderState() != OrderStateEnum.PAID.getCode()) {
+            return false;
+        }
+        order.setOrderState(OrderStateEnum.ACCEPTED.getCode());
+        return baseMapper.updateById(order) > 0;
+    }
+
+    @Override
+    public Boolean finishOrder(Long userId, Long orderId) {
+        Orders order = getById(orderId);
+        if (order == null) return false;
+        Boolean owns = businessFeignClient.checkUserOwnsBusiness(userId, order.getBusinessId());
+        if (!Boolean.TRUE.equals(owns)) throw new RuntimeException("无权操作该订单");
+        if (order.getOrderState() != OrderStateEnum.ACCEPTED.getCode()) {
+            return false;
+        }
+        order.setOrderState(OrderStateEnum.FINISHED.getCode());
+        return baseMapper.updateById(order) > 0;
+    }
+
+    @Override
+    public Boolean rejectOrder(Long userId, Long orderId) {
+        Orders order = getById(orderId);
+        if (order == null) return false;
+        Boolean owns = businessFeignClient.checkUserOwnsBusiness(userId, order.getBusinessId());
+        if (!Boolean.TRUE.equals(owns)) throw new RuntimeException("无权操作该订单");
+        if (order.getOrderState() != OrderStateEnum.UNPAID.getCode() && order.getOrderState() != OrderStateEnum.PAID.getCode()) {
+            return false;
+        }
+        if (order.getOrderState() == OrderStateEnum.PAID.getCode()) {
+            String token = RequestContextHolder.getRequestAttributes() != null ?
+                ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getHeader("Authorization") :
+                null;
+            if (token == null) return false;
+            RestBean<Boolean> refundResult = accountFeignClient.refund(order.getUserId(), order.getOrderTotal(), token);
+            if (refundResult.code() != 200 || !Boolean.TRUE.equals(refundResult.data())) return false;
+        }
+        order.setOrderState(OrderStateEnum.CANCELED.getCode());
+        return baseMapper.updateById(order) > 0;
     }
 }

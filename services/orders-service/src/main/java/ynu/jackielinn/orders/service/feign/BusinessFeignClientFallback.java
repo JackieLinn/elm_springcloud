@@ -1,44 +1,35 @@
 package ynu.jackielinn.orders.service.feign;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import ynu.jackielinn.orders.dto.response.Business;
 import ynu.jackielinn.orders.dto.response.BusinessVO;
 
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 @Component
 public class BusinessFeignClientFallback implements BusinessFeignClient {
+    private static final Logger logger = LoggerFactory.getLogger(BusinessFeignClientFallback.class);
 
     @Override
     public BusinessVO listBusinessByBusinessIdRemote(Long businessId) {
-        BusinessVO fallbackVO = new BusinessVO();
-        fallbackVO.setBusinessId(businessId);
-        fallbackVO.setBusinessName("服务降级");
-        fallbackVO.setBusinessExplain("服务降级");
-        fallbackVO.setBusinessImg("服务降级");
-        fallbackVO.setStartPrice(0.0);
-        fallbackVO.setDeliveryPrice(0.0);
-        return fallbackVO;
+        logger.warn("服务降级：无法获取商家信息，businessId={}", businessId);
+        return null;
     }
 
     @Override
     public Map<Long, Business> getBusinessInfo(Set<Long> businessIds) {
-        Map<Long, Business> fallbackMap = new HashMap<>();
-        for (Long id : businessIds) {
-            Business business = new Business();
-            business.setBusinessId(id);
-            business.setBusinessName("服务降级");
-            business.setBusinessAddress("服务降级");
-            business.setBusinessExplain("服务降级");
-            business.setBusinessImg("服务降级");
-            business.setOrderTypeId(0);
-            business.setStartPrice(0.0);
-            business.setDeliveryPrice(0.0);
-            business.setRemarks("服务降级");
-            fallbackMap.put(id, business);
-        }
-        return fallbackMap;
+        logger.warn("服务降级：无法批量获取商家信息，businessIds={}", businessIds);
+        return Collections.emptyMap();
+    }
+
+    @Override
+    public Boolean checkUserOwnsBusiness(Long userId, Long businessId) {
+        logger.warn("服务降级：无法校验用户-商家归属，userId={}, businessId={}", userId, businessId);
+        return false;
     }
 }

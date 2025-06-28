@@ -11,6 +11,8 @@ import ynu.jackielinn.orders.dto.request.PaymentRO;
 import ynu.jackielinn.orders.dto.response.AllOrderListVO;
 import ynu.jackielinn.orders.dto.response.OrdersBusinessVO;
 import ynu.jackielinn.orders.dto.response.OrdersFoodVO;
+import ynu.jackielinn.orders.dto.response.OrderDetailVO;
+import ynu.jackielinn.orders.entity.Orders;
 import ynu.jackielinn.orders.service.OrdersService;
 
 import java.util.List;
@@ -57,5 +59,35 @@ public class OrdersController {
     @PostMapping("/update-address")
     public RestBean<Integer> updateDaId(@RequestBody OrdersUpdateRO ro) {
         return RestBean.success(ordersService.updateDaId(ro));
+    }
+
+    @Operation(summary = "商家端：根据商家ID查询订单列表", description = "商家端用，返回该商家所有订单")
+    @GetMapping("/list-by-business")
+    public RestBean<List<Orders>> listOrdersByBusinessId(@RequestParam Long userId, @RequestParam Long businessId) {
+        return RestBean.success(ordersService.listOrdersByBusinessId(userId, businessId));
+    }
+
+    @Operation(summary = "商家端：订单详情", description = "根据订单ID获取订单详情")
+    @GetMapping("/detail")
+    public RestBean<OrderDetailVO> getOrderDetail(@RequestParam Long userId, @RequestParam Long orderId) {
+        return RestBean.success(ordersService.getOrderDetail(userId, orderId));
+    }
+
+    @Operation(summary = "商家端：接单", description = "商家接单")
+    @PostMapping("/accept")
+    public RestBean<Boolean> acceptOrder(@RequestParam Long userId, @RequestParam Long orderId) {
+        return RestBean.success(ordersService.acceptOrder(userId, orderId));
+    }
+
+    @Operation(summary = "商家端：完成订单", description = "商家完成订单")
+    @PostMapping("/finish")
+    public RestBean<Boolean> finishOrder(@RequestParam Long userId, @RequestParam Long orderId) {
+        return RestBean.success(ordersService.finishOrder(userId, orderId));
+    }
+
+    @Operation(summary = "商家端：拒单", description = "商家拒单，已支付需退款")
+    @PostMapping("/reject")
+    public RestBean<Boolean> rejectOrder(@RequestParam Long userId, @RequestParam Long orderId) {
+        return RestBean.success(ordersService.rejectOrder(userId, orderId));
     }
 }

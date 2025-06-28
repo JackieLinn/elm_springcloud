@@ -4,6 +4,9 @@ spring:
   cloud:
     nacos:
       server-addr: 127.0.0.1:7777,127.0.0.1:8888,127.0.0.1:9999
+    openfeign:
+      circuitbreaker:
+        enabled: false
   datasource:
     url: jdbc:mysql://localhost:33061/elm_springcloud
     username: root
@@ -15,6 +18,8 @@ spring:
   data:
     elasticsearch:
       uris: http://localhost:9200
+  jackson:
+    time-zone: Asia/Shanghai
 
 server:
   port: 12000
