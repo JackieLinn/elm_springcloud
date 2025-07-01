@@ -14,6 +14,7 @@ import ynu.jackielinn.orders.dto.response.OrdersFoodVO;
 import ynu.jackielinn.orders.dto.response.OrderDetailVO;
 import ynu.jackielinn.orders.entity.Orders;
 import ynu.jackielinn.orders.service.OrdersService;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 
 import java.util.List;
 
@@ -89,5 +90,17 @@ public class OrdersController {
     @PostMapping("/reject")
     public RestBean<Boolean> rejectOrder(@RequestParam Long userId, @RequestParam Long orderId) {
         return RestBean.success(ordersService.rejectOrder(userId, orderId));
+    }
+
+    /**
+     * 管理员端：按商家ID分页查订单
+     */
+    @Operation(summary = "管理员端：按商家ID分页查订单", description = "支持按订单状态筛选")
+    @GetMapping("/admin/list-by-business")
+    public RestBean<IPage<Orders>> adminListOrdersByBusinessId(@RequestParam Long businessId,
+                                                              @RequestParam int pageNum,
+                                                              @RequestParam int pageSize,
+                                                              @RequestParam(required = false) Integer orderState) {
+        return RestBean.success(ordersService.adminListOrdersByBusinessId(businessId, pageNum, pageSize, orderState));
     }
 }

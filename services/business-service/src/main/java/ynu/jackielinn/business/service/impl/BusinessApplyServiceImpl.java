@@ -7,6 +7,7 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import ynu.jackielinn.business.dto.request.BusinessApplyRO;
 import ynu.jackielinn.business.entity.Business;
 import ynu.jackielinn.business.entity.BusinessApply;
 import ynu.jackielinn.business.entity.UserBusiness;
@@ -15,6 +16,9 @@ import ynu.jackielinn.business.service.BusinessApplyService;
 import ynu.jackielinn.business.service.feign.AccountFeignClient;
 import ynu.jackielinn.business.service.UserBusinessService;
 import ynu.jackielinn.business.service.BusinessService;
+import ynu.jackielinn.common.entity.RestBean;
+
+import java.util.List;
 
 @Service
 public class BusinessApplyServiceImpl implements BusinessApplyService {
@@ -37,16 +41,58 @@ public class BusinessApplyServiceImpl implements BusinessApplyService {
      */
     @Override
     public boolean applyForMerchant(BusinessApply apply) {
-        // 校验是否已提交过申请或已是商家
+        // 校验同一用户是否对同一商家名有待审核申请
         QueryWrapper<BusinessApply> wrapper = new QueryWrapper<>();
-        wrapper.eq("applicantId", apply.getApplicantId()).eq("applyStatus", 0);
+        wrapper.eq("applicantId", apply.getApplicantId())
+               .eq("businessName", apply.getBusinessName())
+               .eq("applyStatus", 0);
         if (businessApplyMapper.selectCount(wrapper) > 0) {
-            // 已有待审核申请
+            // 已有待审核的同名商家申请
             return false;
         }
         // 设置初始状态和时间
         apply.setApplyStatus(0); // 0:待审核
         apply.setApplyTime(java.time.LocalDateTime.now());
+        return businessApplyMapper.insert(apply) > 0;
+    }
+
+    /**
+     * 使用BusinessApplyRO提交商家入驻申请
+     * 通过userName查询userId，然后调用原有的申请逻辑
+     * @param applyRO 申请请求对象
+     * @return 申请是否成功
+     */
+    @Override
+    public boolean applyForMerchantByUserName(BusinessApplyRO applyRO) {
+        // 1. 通过userName查询userId
+        RestBean<Long> userIdResponse = accountFeignClient.getUserIdByUserName(applyRO.getUserName());
+        if (userIdResponse == null || userIdResponse.data() == null) {
+            // 用户不存在
+            return false;
+        }
+        Long userId = userIdResponse.data();
+
+        // 2. 校验同一用户是否对同一商家名有待审核申请
+        QueryWrapper<BusinessApply> wrapper = new QueryWrapper<>();
+        wrapper.eq("applicantId", userId)
+               .eq("businessName", applyRO.getBusinessName())
+               .eq("applyStatus", 0);
+        if (businessApplyMapper.selectCount(wrapper) > 0) {
+            // 已有待审核的同名商家申请
+            return false;
+        }
+
+        // 3. 创建BusinessApply对象
+        BusinessApply apply = new BusinessApply();
+        apply.setApplicantId(userId);
+        apply.setBusinessName(applyRO.getBusinessName());
+        apply.setBusinessAddress(applyRO.getBusinessAddress());
+        apply.setContactPhone(applyRO.getContactPhone());
+        apply.setBusinessDesc(applyRO.getBusinessDesc());
+        apply.setApplyStatus(0); // 0:待审核
+        apply.setApplyTime(java.time.LocalDateTime.now());
+
+        // 4. 保存申请
         return businessApplyMapper.insert(apply) > 0;
     }
 
@@ -95,21 +141,32 @@ public class BusinessApplyServiceImpl implements BusinessApplyService {
         apply.setReviewReason(reviewReason);
         apply.setReviewTime(java.time.LocalDateTime.now());
         int updated = businessApplyMapper.updateById(apply);
+        
         // 审核通过后远程调用auth-service升级用户角色为商家
         if (result == 1) {
-            // 获取当前请求的token
-            String token = null;
-            if (RequestContextHolder.getRequestAttributes() != null) {
-                token = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
-                        .getRequest().getHeader("Authorization");
-            }
-            if (token != null) {
-                try {
-                    accountFeignClient.updateRole(apply.getApplicantId(), 2, token);
-                } catch (Exception e) {
-                    // 可加日志记录异常
+            try {
+                // 获取当前请求的token
+                String token = null;
+                if (RequestContextHolder.getRequestAttributes() != null) {
+                    token = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+                            .getRequest().getHeader("Authorization");
                 }
+                
+                if (token != null) {
+                    // 调用远程服务升级用户角色为商家（roleId=2）
+                    RestBean<Boolean> upgradeResult = accountFeignClient.updateRole(apply.getApplicantId(), 2, token);
+                    if (upgradeResult == null || !Boolean.TRUE.equals(upgradeResult.data())) {
+                        // 角色升级失败，记录日志但不影响审核流程
+                        System.err.println("Failed to upgrade user role for userId: " + apply.getApplicantId());
+                    }
+                } else {
+                    System.err.println("No Authorization token found, cannot upgrade user role");
+                }
+            } catch (Exception e) {
+                // 远程调用异常，记录日志但不影响审核流程
+                System.err.println("Exception occurred while upgrading user role: " + e.getMessage());
             }
+            
             // 1. 新增商家
             Business business = new Business();
             business.setBusinessName(apply.getBusinessName());
@@ -122,15 +179,24 @@ public class BusinessApplyServiceImpl implements BusinessApplyService {
             business.setRemarks(null); // 可根据实际情况设置
             businessService.save(business); // 保存后 businessId 自动回填
             Long businessId = business.getBusinessId();
+            
             // 2. 关联 user_business
             if (apply.getApplicantId() != null && businessId != null) {
                 UserBusiness userBusiness = new UserBusiness(null, apply.getApplicantId(), businessId);
                 userBusinessService.save(userBusiness);
             }
+            
             // 3. 可选：apply 表回填 businessId 字段（如有）
             // apply.setBusinessId(businessId);
             // businessApplyMapper.updateById(apply);
         }
         return updated > 0;
     }
-} 
+
+    @Override
+    public List<BusinessApply> getAppliesByUserId(Long userId) {
+        QueryWrapper<BusinessApply> wrapper = new QueryWrapper<>();
+        wrapper.eq("applicantId", userId).orderByDesc("applyTime");
+        return businessApplyMapper.selectList(wrapper);
+    }
+}

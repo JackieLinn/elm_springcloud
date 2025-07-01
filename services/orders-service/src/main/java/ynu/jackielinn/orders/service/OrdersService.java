@@ -1,6 +1,7 @@
 package ynu.jackielinn.orders.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import ynu.jackielinn.orders.dto.request.OrdersRO;
 import ynu.jackielinn.orders.dto.request.OrdersUpdateRO;
 import ynu.jackielinn.orders.dto.request.PaymentRO;
@@ -56,4 +57,9 @@ public interface OrdersService extends IService<Orders> {
      * 商家端：拒单（如已支付需退款）
      */
     Boolean rejectOrder(Long userId, Long orderId);
+
+    /**
+     * 管理员端：按商家ID分页查订单
+     */
+    IPage<Orders> adminListOrdersByBusinessId(Long businessId, int pageNum, int pageSize, Integer orderState);
 }

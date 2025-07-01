@@ -25,7 +25,7 @@ public interface FoodService extends IService<Food> {
     /**
      * 查询商家所有菜品（商家/管理端用）
      */
-    List<FoodVO> listAllFoodByBusinessId(Long businessId);
+    List<Food> listAllFoodByBusinessId(Long businessId);
 
     /**
      * 查询商家所有上架菜品（客户端用）

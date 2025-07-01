@@ -28,4 +28,11 @@ public interface AccountService extends IService<Account>, UserDetailsService {
     Boolean refund(Long userId, Double price);
 
     IPage<AccountVO> listAccounts(int pageNum, int pageSize, Long roleId);
+
+    /**
+     * 根据用户名查询用户ID
+     * @param userName 用户名
+     * @return 用户ID，如果用户不存在则返回null
+     */
+    Long getUserIdByUserName(String userName);
 }

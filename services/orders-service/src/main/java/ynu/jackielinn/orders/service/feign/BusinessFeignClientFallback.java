@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import ynu.jackielinn.orders.dto.response.Business;
 import ynu.jackielinn.orders.dto.response.BusinessVO;
+import ynu.jackielinn.common.entity.RestBean;
 
 import java.util.Collections;
 import java.util.List;
@@ -28,8 +29,8 @@ public class BusinessFeignClientFallback implements BusinessFeignClient {
     }
 
     @Override
-    public Boolean checkUserOwnsBusiness(Long userId, Long businessId) {
+    public RestBean<Boolean> checkUserOwnsBusiness(Long userId, Long businessId) {
         logger.warn("服务降级：无法校验用户-商家归属，userId={}, businessId={}", userId, businessId);
-        return false;
+        return RestBean.failure(503, "服务降级，无法校验用户-商家归属");
     }
 }

@@ -7,7 +7,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
@@ -60,7 +62,7 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // 定义无需认证的公共路径
-        var publicPaths = new String[]{"/doc/**", "/auth/**", "/error"};
+        var publicPaths = new String[]{"/doc/**", "/auth/**", "auth-service/api/account/remote/get-user-id","business-service/api/business/merchant/apply","/error"};
         return http
                 // 配置接口访问权限
                 .authorizeHttpRequests(conf -> conf
@@ -193,5 +195,11 @@ public class SecurityConfiguration {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(RestBean.unauthorized(exception.getMessage()).asJsonString());
+    }
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring()
+                .requestMatchers("/api/account/remote/get-user-id","/api/business/merchant/apply");  // 忽略这些路径
     }
 }

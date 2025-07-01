@@ -1,6 +1,8 @@
 package ynu.jackielinn.business.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
@@ -88,6 +90,21 @@ public class BusinessServiceImpl extends ServiceImpl<BusinessMapper, Business> i
     }
 
     /**
+     * 根据类型ID查询商家列表
+     *
+     * @param businessId 商家ID
+     * @return 商家Business对象
+     */
+    @Override
+    public Business listBusinessById(Long businessId) {
+        Business business = baseMapper.selectById(businessId);
+        if (business == null) {
+            return null;
+        }
+        return business.asViewObject(Business.class);
+    }
+
+    /**
      * 根据商家ID获取配送价格
      *
      * @param businessId 商家ID，用于查询特定商家的配送价格
@@ -162,5 +179,13 @@ public class BusinessServiceImpl extends ServiceImpl<BusinessMapper, Business> i
         if (business == null) return false;
         business.setStatus(status);
         return baseMapper.updateById(business) > 0;
+    }
+
+    @Override
+    public IPage<Business> adminListBusinesses(int pageNum, int pageSize, Integer status, String keyword) {
+        QueryWrapper<Business> wrapper = new QueryWrapper<>();
+        if (status != null) wrapper.eq("status", status);
+        if (keyword != null && !keyword.isEmpty()) wrapper.like("businessName", keyword);
+        return baseMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
     }
 }

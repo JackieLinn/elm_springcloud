@@ -19,11 +19,11 @@ public class FoodServiceImpl extends ServiceImpl<FoodMapper, Food> implements Fo
      * 商家/管理端根据商家ID查询所有食品列表
      *
      * @param businessId 商家ID，不能为空
-     * @return 食品列表，列表中的元素是FoodVO对象
+     * @return 食品列表，列表中的元素是Food对象
      * @throws IllegalArgumentException 如果businessId为空，则抛出此异常
      */
     @Override
-    public List<FoodVO> listAllFoodByBusinessId(Long businessId) {
+    public List<Food> listAllFoodByBusinessId(Long businessId) {
         if (businessId == null) {
             throw new IllegalArgumentException("Business ID cannot be null");
         }
@@ -31,7 +31,7 @@ public class FoodServiceImpl extends ServiceImpl<FoodMapper, Food> implements Fo
         queryWrapper.eq("businessId", businessId);
         List<Food> foods = baseMapper.selectList(queryWrapper);
         return foods.stream()
-                .map(f -> f.asViewObject(FoodVO.class))
+                .map(f -> f.asViewObject(Food.class))
                 .collect(Collectors.toList());
     }
 

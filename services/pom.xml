@@ -11,8 +11,6 @@
 
     <packaging>pom</packaging>
     <modules>
-        <module>test-service</module>
-        <module>test2-service</module>
         <module>auth-service</module>
         <module>business-service</module>
         <module>food-service</module>

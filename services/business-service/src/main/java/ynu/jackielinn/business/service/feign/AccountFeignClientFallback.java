@@ -14,4 +14,11 @@ public class AccountFeignClientFallback implements AccountFeignClient {
         logger.warn("服务降级：无法调用角色升级服务，用户ID：{}，目标角色ID：{}", userId, roleId);
         return RestBean.failure(503, "角色升级服务当前不可用");
     }
+
+    @Override
+    public RestBean<Long> getUserIdByUserName(String userName) {
+        // 降级处理：记录日志，返回null表示用户不存在
+        logger.warn("服务降级：无法调用用户查询服务，用户名：{}", userName);
+        return RestBean.failure(503, "用户查询服务当前不可用");
+    }
 } 
