@@ -3,6 +3,7 @@ package ynu.jackielinn.food.entity;
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import ynu.jackielinn.common.entity.BaseData;
 
 import java.time.LocalDateTime;
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 @Data
 @TableName("food")
 @AllArgsConstructor
+@NoArgsConstructor
 public class Food implements BaseData {
     @TableId(type = IdType.AUTO)
     Long foodId;

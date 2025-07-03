@@ -250,4 +250,21 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
         voPage.setRecords(result.getRecords().stream().map(AuthConvertUtils::account2VO).toList());
         return voPage;
     }
+
+    /**
+     * 根据用户名查询用户ID
+     * 此方法通过用户名从数据库中查询对应的用户ID
+     * 如果找到对应的用户，则返回其用户ID；如果没有找到，则返回null
+     *
+     * @param userName 用户名，用于查询数据库中的用户记录
+     * @return 用户ID，如果找到对应的用户，则返回用户ID；否则返回null
+     */
+    @Override
+    public Long getUserIdByUserName(String userName) {
+        if (userName == null || userName.trim().isEmpty()) {
+            return null;
+        }
+        Account account = this.query().eq("userName", userName.trim()).one();
+        return account != null ? account.getUserId() : null;
+    }
 }

@@ -8,7 +8,8 @@ create table account
     email    varchar(255)        not null comment '用户邮箱',
     userImg  varchar(255)        null comment '用户头像',
     balance  double default 1000 not null comment '用户余额',
-    delTag   int                 not null comment '删除标记（1: 正常, 0: 删除）'
+    delTag   int                 not null comment '删除标记（1: 正常, 0: 删除）',
+    constraint uk_account_username unique (userName)
 )
     comment '用户表';
 

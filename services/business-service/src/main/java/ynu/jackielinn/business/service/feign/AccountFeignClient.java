@@ -1,6 +1,7 @@
 package ynu.jackielinn.business.service.feign;
 
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,4 +15,12 @@ public interface AccountFeignClient {
         @RequestParam("roleId") Integer roleId,
         @RequestHeader("Authorization") String token
     );
+
+    /**
+     * 远程调用：根据用户名查询用户ID
+     * @param userName 用户名
+     * @return 用户ID，如果用户不存在则返回null
+     */
+    @GetMapping("/remote/get-user-id")
+    RestBean<Long> getUserIdByUserName(@RequestParam("userName") String userName);
 } 

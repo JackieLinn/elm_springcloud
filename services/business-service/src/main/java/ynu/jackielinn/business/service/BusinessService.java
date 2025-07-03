@@ -1,6 +1,7 @@
 package ynu.jackielinn.business.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import ynu.jackielinn.business.dto.response.BusinessVO;
 import ynu.jackielinn.business.entity.Business;
 import ynu.jackielinn.business.entity.BusinessEsDoc;
@@ -18,6 +19,8 @@ public interface BusinessService extends IService<Business> {
     List<BusinessVO> listBusinessByOrderTypeId(Integer orderTypeId);
 
     BusinessVO listBusinessByBusinessId(Long businessId);
+
+    Business listBusinessById(Long businessId);
 
     Double getDeliveryPriceByBusinessId(Long businessId);
 
@@ -37,4 +40,9 @@ public interface BusinessService extends IService<Business> {
      * @return 操作结果，成功返回true，失败返回false
      */
     boolean updateBusinessStatus(Long businessId, int status);
+
+    /**
+     * 管理员分页查找所有商家
+     */
+    IPage<Business> adminListBusinesses(int pageNum, int pageSize, Integer status, String keyword);
 }

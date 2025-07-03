@@ -13,7 +13,6 @@ import ynu.jackielinn.common.entity.RestBean;
 import ynu.jackielinn.food.dto.response.FoodVO;
 import ynu.jackielinn.food.entity.Food;
 import ynu.jackielinn.food.service.FoodService;
-import ynu.jackielinn.food.service.feign.BusinessFeignClient;
 
 import java.util.List;
 import java.util.Map;
@@ -27,9 +26,6 @@ public class FoodController {
     @Resource
     FoodService foodService;
 
-    @Resource
-    BusinessFeignClient businessFeignClient;
-
     @Operation(summary = "根据商家编号获取上架食物信息（客户端用）", description = "只返回上架菜品")
     @GetMapping("/list-food-by-BusinessId")
     public RestBean<List<FoodVO>> listOnShelfFoodByBusinessId(Long businessId) {
@@ -38,7 +34,7 @@ public class FoodController {
 
     @Operation(summary = "根据商家编号获取所有食物信息（商家/管理端用）", description = "返回所有菜品")
     @GetMapping("/list-all-food-by-BusinessId")
-    public RestBean<List<FoodVO>> listAllFoodByBusinessId(@RequestParam Long businessId) {
+    public RestBean<List<Food>> listAllFoodByBusinessId(@RequestParam Long businessId) {
         return RestBean.success(foodService.listAllFoodByBusinessId(businessId));
     }
 

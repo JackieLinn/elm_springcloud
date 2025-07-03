@@ -10,6 +10,7 @@ import ynu.jackielinn.business.entity.BusinessEsDoc;
 import ynu.jackielinn.business.service.BusinessService;
 import ynu.jackielinn.business.service.UserBusinessService;
 import ynu.jackielinn.common.entity.RestBean;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 
 import java.util.HashMap;
 import java.util.List;
@@ -105,9 +106,9 @@ public class BusinessController {
 
     @Operation(summary = "根据用户ID获取其所有商家信息", description = "商家端：我的店铺列表")
     @GetMapping("/list-by-user")
-    public RestBean<List<BusinessVO>> listBusinessByUserId(@RequestParam Long userId) {
+    public RestBean<List<Business>> listBusinessByUserId(@RequestParam Long userId) {
         List<Long> businessIds = userBusinessService.getBusinessIdsByUserId(userId);
-        return RestBean.success(businessIds.stream().map(businessService::listBusinessByBusinessId).toList());
+        return RestBean.success(businessIds.stream().map(businessService::listBusinessById).toList());
     }
 
     @Operation(summary = "修改商家信息（带用户校验）", description = "商家端修改自己的店铺信息，需校验归属")
@@ -149,5 +150,25 @@ public class BusinessController {
     public RestBean<Boolean> enableBusiness(@RequestParam Long businessId) {
         boolean result = businessService.updateBusinessStatus(businessId, 1);
         return result ? RestBean.success(true) : RestBean.failure(400, "启用失败");
+    }
+
+    /**
+     * 管理员分页查找所有商家
+     */
+    @Operation(summary = "管理员分页查找所有商家", description = "支持按状态和名称模糊搜索")
+    @GetMapping("/admin/list")
+    public RestBean<IPage<Business>> adminListBusinesses(@RequestParam int pageNum, @RequestParam int pageSize,
+                                                        @RequestParam(required = false) Integer status,
+                                                        @RequestParam(required = false) String keyword) {
+        return RestBean.success(businessService.adminListBusinesses(pageNum, pageSize, status, keyword));
+    }
+
+    /**
+     * 管理员查单个商家详情
+     */
+    @Operation(summary = "管理员查单个商家详情", description = "通过businessId查商家详情")
+    @GetMapping("/admin/detail")
+    public RestBean<Business> adminBusinessDetail(@RequestParam Long businessId) {
+        return RestBean.success(businessService.listBusinessById(businessId));
     }
 }

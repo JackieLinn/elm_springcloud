@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ynu.jackielinn.orders.dto.response.Business;
 import ynu.jackielinn.orders.dto.response.BusinessVO;
+import ynu.jackielinn.common.entity.RestBean;
 
 import java.util.Map;
 import java.util.Set;
@@ -19,5 +20,5 @@ public interface BusinessFeignClient {
     Map<Long, Business> getBusinessInfo(@RequestParam Set<Long> businessIds);
 
     @GetMapping("/user-business/check")
-    Boolean checkUserOwnsBusiness(@RequestParam("userId") Long userId, @RequestParam("businessId") Long businessId);
+    RestBean<Boolean> checkUserOwnsBusiness(@RequestParam("userId") Long userId, @RequestParam("businessId") Long businessId);
 }

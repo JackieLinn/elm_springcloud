@@ -23,6 +23,8 @@ import ynu.jackielinn.common.entity.RestBean;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import ynu.jackielinn.orders.enums.OrderStateEnum;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -258,8 +260,8 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders>
 
     @Override
     public List<Orders> listOrdersByBusinessId(Long userId, Long businessId) {
-        Boolean owns = businessFeignClient.checkUserOwnsBusiness(userId, businessId);
-        if (!Boolean.TRUE.equals(owns)) throw new RuntimeException("无权查看该商家订单");
+        RestBean<Boolean> ownsBean = businessFeignClient.checkUserOwnsBusiness(userId, businessId);
+        if (ownsBean == null || !Boolean.TRUE.equals(ownsBean.data())) throw new RuntimeException("无权查看该商家订单");
         QueryWrapper<Orders> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("businessId", businessId);
         return this.list(queryWrapper);
@@ -269,8 +271,8 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders>
     public OrderDetailVO getOrderDetail(Long userId, Long orderId) {
         Orders order = this.getById(orderId);
         if (order == null) return null;
-        Boolean owns = businessFeignClient.checkUserOwnsBusiness(userId, order.getBusinessId());
-        if (!Boolean.TRUE.equals(owns)) throw new RuntimeException("无权查看该订单");
+        RestBean<Boolean> ownsBean = businessFeignClient.checkUserOwnsBusiness(userId, order.getBusinessId());
+        if (ownsBean == null || !Boolean.TRUE.equals(ownsBean.data())) throw new RuntimeException("无权查看该订单");
         OrderDetailVO vo = new OrderDetailVO();
         vo.setOrderId(order.getOrderId());
         vo.setOrderDate(order.getOrderDate());
@@ -288,8 +290,8 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders>
     public Boolean acceptOrder(Long userId, Long orderId) {
         Orders order = getById(orderId);
         if (order == null) return false;
-        Boolean owns = businessFeignClient.checkUserOwnsBusiness(userId, order.getBusinessId());
-        if (!Boolean.TRUE.equals(owns)) throw new RuntimeException("无权操作该订单");
+        RestBean<Boolean> ownsBean = businessFeignClient.checkUserOwnsBusiness(userId, order.getBusinessId());
+        if (ownsBean == null || !Boolean.TRUE.equals(ownsBean.data())) throw new RuntimeException("无权操作该订单");
         if (order.getOrderState() != OrderStateEnum.UNPAID.getCode() && order.getOrderState() != OrderStateEnum.PAID.getCode()) {
             return false;
         }
@@ -301,8 +303,8 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders>
     public Boolean finishOrder(Long userId, Long orderId) {
         Orders order = getById(orderId);
         if (order == null) return false;
-        Boolean owns = businessFeignClient.checkUserOwnsBusiness(userId, order.getBusinessId());
-        if (!Boolean.TRUE.equals(owns)) throw new RuntimeException("无权操作该订单");
+        RestBean<Boolean> ownsBean = businessFeignClient.checkUserOwnsBusiness(userId, order.getBusinessId());
+        if (ownsBean == null || !Boolean.TRUE.equals(ownsBean.data())) throw new RuntimeException("无权操作该订单");
         if (order.getOrderState() != OrderStateEnum.ACCEPTED.getCode()) {
             return false;
         }
@@ -314,8 +316,8 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders>
     public Boolean rejectOrder(Long userId, Long orderId) {
         Orders order = getById(orderId);
         if (order == null) return false;
-        Boolean owns = businessFeignClient.checkUserOwnsBusiness(userId, order.getBusinessId());
-        if (!Boolean.TRUE.equals(owns)) throw new RuntimeException("无权操作该订单");
+        RestBean<Boolean> ownsBean = businessFeignClient.checkUserOwnsBusiness(userId, order.getBusinessId());
+        if (ownsBean == null || !Boolean.TRUE.equals(ownsBean.data())) throw new RuntimeException("无权操作该订单");
         if (order.getOrderState() != OrderStateEnum.UNPAID.getCode() && order.getOrderState() != OrderStateEnum.PAID.getCode()) {
             return false;
         }
@@ -329,5 +331,13 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders>
         }
         order.setOrderState(OrderStateEnum.CANCELED.getCode());
         return baseMapper.updateById(order) > 0;
+    }
+
+    @Override
+    public IPage<Orders> adminListOrdersByBusinessId(Long businessId, int pageNum, int pageSize, Integer orderState) {
+        QueryWrapper<Orders> wrapper = new QueryWrapper<>();
+        wrapper.eq("businessId", businessId);
+        if (orderState != null) wrapper.eq("orderState", orderState);
+        return baseMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
     }
 }
