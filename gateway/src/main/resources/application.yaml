@@ -6,6 +6,10 @@ spring:
   cloud:
     nacos:
       server-addr: 127.0.0.1:7777,127.0.0.1:8888,127.0.0.1:9999
+    gateway:
+      default-filters:
+        - CircuitBreaker=default-circuit-breaker
+        - RequestRateLimiter=default-rate-limiter
   main:
     web-application-type: reactive
   security:
@@ -31,6 +35,35 @@ spring:
           min-idle: 0
           max-wait: 1000ms
       password: 12345678
+
+# Resilience4j Circuit Breaker配置
+resilience4j:
+  circuitbreaker:
+    instances:
+      backendA:
+        failure-rate-threshold: 30
+        sliding-window-type: TIME_BASED
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        wait-duration-in-open-state: 5s
+        permitted-number-of-calls-in-half-open-state: 3
+        slow-call-rate-threshold: 50
+        slow-call-duration-threshold: 5s
+
+# 管理端点配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,circuitbreakers,gateway
+  endpoint:
+    health:
+      show-details: always
+  health:
+    circuitbreakers:
+      enabled: true
+
+
 
 server:
   port: 80

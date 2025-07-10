@@ -6,31 +6,111 @@ spring:
           uri: lb://auth-service
           predicates:
             - Path=/auth/**,/api/account/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: backendA
+                fallbackUri: forward:/fallback
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 5
+                redis-rate-limiter.burstCapacity: 10
+                key-resolver: "#{@ipKeyResolver}"
         - id: business-route
           uri: lb://business-service
           predicates:
             - Path=/api/business/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: backendA
+                fallbackUri: forward:/fallback
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 5
+                redis-rate-limiter.burstCapacity: 10
+                key-resolver: "#{@ipKeyResolver}"
         - id: food-route
           uri: lb://food-service
           predicates:
             - Path=/api/food/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: backendA
+                fallbackUri: forward:/fallback
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 5
+                redis-rate-limiter.burstCapacity: 10
+                key-resolver: "#{@ipKeyResolver}"
         - id: address-route
           uri: lb://address-service
           predicates:
               - Path=/api/deliveryAddress/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: backendA
+                fallbackUri: forward:/fallback
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 5
+                redis-rate-limiter.burstCapacity: 10
+                key-resolver: "#{@ipKeyResolver}"
         - id: cart-route
           uri: lb://cart-service
           predicates:
             - Path=/api/cart/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: backendA
+                fallbackUri: forward:/fallback
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 5
+                redis-rate-limiter.burstCapacity: 10
+                key-resolver: "#{@ipKeyResolver}"
         - id: orders-route
           uri: lb://orders-service
           predicates:
               - Path=/api/orders/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: backendA
+                fallbackUri: forward:/fallback
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 5
+                redis-rate-limiter.burstCapacity: 10
+                key-resolver: "#{@ipKeyResolver}"
         - id: test-route
           uri: lb://test-service
           predicates:
             - Path=/api/test/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: backendA
+                fallbackUri: forward:/fallback
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 5
+                redis-rate-limiter.burstCapacity: 10
+                key-resolver: "#{@ipKeyResolver}"
         - id: test2-route
           uri: lb://test2-service
           predicates:
             - Path=/api/test2/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: backendA
+                fallbackUri: forward:/fallback
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 5
+                redis-rate-limiter.burstCapacity: 10
+                key-resolver: "#{@ipKeyResolver}"
