@@ -28,12 +28,12 @@ spring:
           max-wait: 1000ms
       password: 12345678
   datasource:
-    url: jdbc:mysql://localhost:33061/elm_springcloud
+    url: jdbc:mysql://localhost:33070/elm_db
     username: root
-    password: 12345678
-#    url: jdbc:mysql://localhost:33070/elm_db
+    password: root
+#    url: jdbc:mysql://localhost:33061/elm_springcloud
 #    username: root
-#    password: root
+#    password: 12345678
     driver-class-name: com.mysql.cj.jdbc.Driver
   rabbitmq:
     addresses: localhost
